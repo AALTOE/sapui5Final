@@ -1,0 +1,61 @@
+<mvc:View
+    controllerName="com.logali.sapui5rh.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+>
+    <Page
+        id="page"
+        title="{i18n>title}"
+    >
+        <Panel
+            expandable="true"
+            expanded="true"
+            headerText="Empleados"
+            width="auto"
+            class="sapUiResponsiveMargin"
+        >
+            <content>
+                <GenericTile
+                    class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+                    header="Crear empleado"
+                    press="press"
+                >
+                    <TileContent>
+                        <ImageContent src="sap-icon://add-employee" />
+                    </TileContent>
+                </GenericTile>
+            </content>
+            <content>
+                <GenericTile
+                    class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+                    header="Ver empleados"
+                    press=""
+                >
+                    <TileContent>
+                        <ImageContent src="sap-icon://employee-lookup" />
+                    </TileContent>
+                </GenericTile>
+            </content>
+        </Panel>
+
+        <Panel
+            expandable="true"
+            expanded="true"
+            headerText="Pedidos"
+            width="auto"
+            class="sapUiResponsiveMargin"
+        >
+            <content>
+                <GenericTile
+                    class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+                    header="Firmar pedido"
+                    press=""
+                >
+                    <TileContent>
+                        <ImageContent src="sap-icon://signature" />
+                    </TileContent>
+                </GenericTile>
+            </content>
+        </Panel>
+    </Page>
+</mvc:View>
