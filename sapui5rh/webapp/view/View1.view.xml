@@ -6,19 +6,20 @@
     <Page
         id="page"
         title="{i18n>title}"
+        titleAlignment="Center"
     >
         <Panel
             expandable="true"
             expanded="true"
-            headerText="Empleados"
+            headerText="{i18n>employeePanelHeader}"
             width="auto"
             class="sapUiResponsiveMargin"
         >
             <content>
                 <GenericTile
                     class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
-                    header="Crear empleado"
-                    press="press"
+                    header="{i18n>tileEmployeeCreate}"
+                    press="toCreateEmployee"
                 >
                     <TileContent>
                         <ImageContent src="sap-icon://add-employee" />
@@ -28,8 +29,8 @@
             <content>
                 <GenericTile
                     class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
-                    header="Ver empleados"
-                    press=""
+                    header="{i18n>tileEmployeeView}"
+                    press="toViewEmployee"
                 >
                     <TileContent>
                         <ImageContent src="sap-icon://employee-lookup" />
@@ -41,15 +42,15 @@
         <Panel
             expandable="true"
             expanded="true"
-            headerText="Pedidos"
+            headerText="{i18n>ordersPanelHeader}"
             width="auto"
             class="sapUiResponsiveMargin"
         >
             <content>
                 <GenericTile
                     class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
-                    header="Firmar pedido"
-                    press=""
+                    header="{i18n>tileSignature}"
+                    press="toEmployeeSignature"
                 >
                     <TileContent>
                         <ImageContent src="sap-icon://signature" />

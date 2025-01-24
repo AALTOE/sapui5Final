@@ -1,0 +1,13 @@
+<mvc:View
+    controllerName="com.logali.sapui5rh.controller.ViewEmployee"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+>
+    <Page
+        title="{i18n>tileEmployeeView}"
+        titleAlignment="Center"
+        showNavButton="true"
+        navButtonPress="onBack"
+    >
+    </Page>
+</mvc:View>

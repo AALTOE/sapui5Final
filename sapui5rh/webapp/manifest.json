@@ -79,18 +79,42 @@
                     "target": [
                         "TargetView1"
                     ]
+                },
+                {
+                    "name": "RouteCreateEmployee",
+                    "pattern": "CreateEmployee",
+                    "target": [
+                        "TargetCreateEmployee"
+                    ]
+                },
+                {
+                    "name": "RouteViewEmployee",
+                    "pattern": "ViewEmployee",
+                    "target": [
+                        "TargetViewEmployee"
+                    ]
                 }
             ],
             "targets": {
                 "TargetView1": {
                     "id": "View1",
-                    "name": "View1"
+                    "name": "View1",
+                    "transition": "show"
+                },
+                "TargetCreateEmployee": {
+                    "viewType": "XML",
+                    "viewName": "CreateEmployee"
+                },
+                "TargetViewEmployee": {
+                    "viewType": "XML",
+                    "viewName": "ViewEmployee"
                 }
             }
         },
         "rootView": {
             "viewName": "com.logali.sapui5rh.view.App",
             "type": "XML",
+            "async": true,
             "id": "App"
         }
     }
