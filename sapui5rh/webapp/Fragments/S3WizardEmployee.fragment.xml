@@ -1,0 +1,38 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+>
+    <WizardStep
+        id="addInfomration"
+        title="{i18n>addInfomration}"
+        validated="true"
+    >
+        <MessageStrip
+            class="sapUiSmallMarginBottom"
+            text="{i18n>addInfomrationDesc}"
+            showIcon="true"
+        />
+        <Text
+            text="{i18n>inputComent}"
+            class="sapUiTinyMarginTop"
+        />
+        <TextArea
+            value=""
+            width="100%"
+        />
+        <UploadCollection
+            id="upliadCollection"
+            maximumFilenameLength="55"
+            maximumFileSize="10"
+            multiple="true"
+            sameFilenameAllowed="true"
+            instantUpload="true"
+            uploadUrl="/sap/opu/odata/sap/YSAPUI5_SRV_01/FilesSet"
+            change="onFileChange"
+            uploadComplete="onFileUploadComplete"
+            beforeUploadStarts="onFileBeforeUpload"
+            fileDeleted="onFiledeleted"
+        />
+    </WizardStep>
+</core:FragmentDefinition>

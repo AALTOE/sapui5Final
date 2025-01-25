@@ -1,0 +1,84 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+>
+    <!--Titulo Wizard-->
+    <WizardStep
+        id="employeesData"
+        title="{i18n>employeesData}"
+        validated="true"
+    >
+        <!--Descripción Wizard-->
+        <MessageStrip
+            class="sapUiSmallMarginBottom"
+            text="{i18n>employeesDataDesc}"
+            showIcon="true"
+        />
+        <!--Formulario Wizard-->
+            <form:SimpleForm
+                editable="true"
+                layout="ResponsiveGridLayout"
+            >
+                <Label
+                    text="{i18n>nameInput}"
+                    required="true"
+                />
+                <Input
+                    id="ProductName"
+                    liveChange=""
+                    placeholder="{i18n>placeHolderName}"
+                />
+
+                <Label
+                    text="{i18n>lastNameInput}"
+                    required="true"
+                />
+                <Input
+                    id="lastname"
+                    liveChange=""
+                    placeholder="{i18n>placeHolderLasteName}"
+                />
+
+                <Label
+                    text="{i18n>cifInput}"
+                    required="true"
+                />
+                <Input
+                    id="cif"
+                    liveChange=""
+                    placeholder="{i18n>placeholderCIF}"
+                />
+
+                <Label
+                    text="{i18n>DNInput}"
+                    required="true"
+                />
+                <Input
+                    id="dni"
+                    liveChange=""
+                    placeholder="{i18n>placeholderDNI}"
+                />
+
+                <Label
+                    text="{i18n>priceInput}"
+                    required="true"
+                />
+                <Slider enableTickmarks="true" min="50000" max="200000" step="1000" class="sapUiLargeMarginBottom" width="100%"/>
+                
+                <Label
+                    text="{i18n>salary}"
+                    required="true"
+                />
+                <Slider enableTickmarks="true" min="100" max="2000" step="100" class="sapUiLargeMarginBottom" width="100%"/>
+
+                <Label
+                    text="{i18n>incorDateInput}"
+                    required="true"
+                />
+                <DatePicker dateValue="" change="" valueState="None" placeholder="{i18n>placerholderDate}"/>
+                
+            </form:SimpleForm>
+        
+    </WizardStep>
+</core:FragmentDefinition>

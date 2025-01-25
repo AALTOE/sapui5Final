@@ -1,0 +1,33 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <WizardStep
+        id="ProductTypeStep"
+        title="{i18n>typeEmployee}"
+        validated="true"
+        nextStep="false"
+    >
+        <MessageStrip
+            class="sapUiSmallMarginBottom"
+            text="{i18n>typeEmployeeDesc}"
+            showIcon="true"
+        />
+        <HBox
+            alignItems="Center"
+            justifyContent="Center"
+            width="100%"
+        >
+            <SegmentedButton
+                width="320px"
+                selectionChange="setProductTypeFromSegmented"
+            >
+                <items>
+                    <SegmentedButtonItem text="{i18n>btnInter}" />
+                    <SegmentedButtonItem text="{i18n>bntAut}" />
+                    <SegmentedButtonItem text="{i18n>btn}" />
+                </items>
+            </SegmentedButton>
+        </HBox>
+    </WizardStep>
+</core:FragmentDefinition>

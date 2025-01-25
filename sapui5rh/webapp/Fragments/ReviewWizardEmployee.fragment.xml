@@ -1,0 +1,103 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+>
+    <Page
+        id="wizardReviewPage"
+        showHeader="false"
+    >
+        <content>
+            <form:SimpleForm
+                title="1. {i18n>typeEmployee}"
+                editable="false"
+                layout="ResponsiveGridLayout"
+            >
+                <form:content>
+                    <!--Tipo-->
+                    <Label text="{i18n>type}" />
+                    <!--texto del tipo-->
+                    <Text
+                        id="ProductTypeChosen"
+                        text="Gernete{/productType}"
+                    />
+                    <!--Enlace para editar el paso uno-->
+                    <Link
+                        press="editStepOne"
+                        text="Edit"
+                    />
+                </form:content>
+            </form:SimpleForm>
+
+            <form:SimpleForm
+                title="2. {i18n>employeesData}"
+                editable="false"
+                layout="ResponsiveGridLayout"
+            >
+                <form:content>
+                    <!--Nombre-->
+                    <Label text="{i18n>nameInput}" />
+                    <Text text="Jesús" />
+                    <!--Apellido-->
+                    <Label text="{i18n>lastNameInput}" />
+                    <Text text="Hernandéz" />
+                    <!--CIF-->
+                    <Label text="{i18n>cifInput}" />
+                    <Text text="12324" />
+                    <!--DNI-->
+                    <Label text="{i18n>DNInput}" />
+                    <Text text="123345677" />
+                    <!--Salario bruto anual-->
+                    <Label text="{i18n>salary}" />
+                    <Text text="70000" />
+                    <!--Precio diario-->
+                    <Label text="{i18n>priceInput}" />
+                    <Text text="10000" />
+                    <!--Fecha-->
+                    <Label text="{i18n>incorDateInput}" />
+                    <Text text="24 Ene 2025" />
+                    <!--Enlace para editar el paso dos-->
+                    <Link
+                        press="editStepTwo"
+                        text="Edit"
+                    />
+                </form:content>
+            </form:SimpleForm>
+
+            <form:SimpleForm
+                title="3. {i18n>addInfomration}"
+                editable="false"
+                layout="ResponsiveGridLayout"
+            >
+                <form:content>
+                    <Label text="{i18n>inputComent}" />
+                    <Text
+                        text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+								tempor incididunt ut labore et dolore magna aliqua. "
+                    />
+                    <Label text="{i18n>documents}" />
+                    <Text text="1 archivo" />
+                    <!--Enlace para editar el paso tres-->
+                    <Link
+                        press="editStepThree"
+                        text="Edit"
+                    />
+                </form:content>
+            </form:SimpleForm>
+        </content>
+        <footer>
+            <Bar>
+                <contentRight>
+                    <Button
+                        text="Submit"
+                        press="handleWizardSubmit"
+                    />
+                    <Button
+                        text="Cancel"
+                        press="handleWizardCancel"
+                    />
+                </contentRight>
+            </Bar>
+        </footer>
+    </Page>
+</core:FragmentDefinition>
