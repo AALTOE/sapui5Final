@@ -7,6 +7,7 @@
     <WizardStep
         id="employeesData"
         title="{i18n>employeesData}"
+        activate="validationForm"
         validated="true"
     >
         <!--Descripción Wizard-->
@@ -16,69 +17,107 @@
             showIcon="true"
         />
         <!--Formulario Wizard-->
-            <form:SimpleForm
-                editable="true"
-                layout="ResponsiveGridLayout"
-            >
-                <Label
-                    text="{i18n>nameInput}"
-                    required="true"
-                />
-                <Input
-                    id="ProductName"
-                    liveChange=""
-                    placeholder="{i18n>placeHolderName}"
-                />
+        <form:SimpleForm
+            editable="true"
+            layout="ResponsiveGridLayout"
+        >
+            <!--Nombre-->
+            <Label
+                text="{i18n>nameInput}"
+                required="true"
+            />
+            <Input
+                id="iname"
+                liveChange="validationForm"
+                placeholder="{i18n>placeHolderName}"
+                valueState="{objTypeEmployee>/SATENAME}"
+                valueStateText="{i18n>valueStateName}"
+            />
+            <!--Apellidos-->
+            <Label
+                text="{i18n>lastNameInput}"
+                required="true"
+            />
+            <Input
+                id="ilastname"
+                liveChange="validationForm"
+                placeholder="{i18n>placeHolderLasteName}"
+                valueState="{objTypeEmployee>/SATELASTNAME}"
+                valueStateText="{i18n>valueStateLastName}"
+            />
+            <!--CIF-->
+            <Label
+                text="{i18n>cifInput}"
+                required="true"
+                visible="{objTypeEmployee>/INPUTCFI}"
+            />
+            <Input
+                id="icif"
+                liveChange="validationForm"
+                placeholder="{i18n>placeholderCIF}"
+                visible="{objTypeEmployee>/INPUTCFI}"
+                valueState="{objTypeEmployee>/SATECIF}"
+                valueStateText="{i18n>valueStateCIF}"
+            />
+            <!--DNI-->
+            <Label
+                text="{i18n>DNInput}"
+                required="true"
+                visible="{objTypeEmployee>/INPUTDNI}"
+            />
+            <Input
+                id="idni"
+                liveChange="validationForm"
+                placeholder="{i18n>placeholderDNI}"
+                visible="{objTypeEmployee>/INPUTDNI}"
+                valueState="{objTypeEmployee>/SATEDNI}"
+                valueStateText="{i18n>valueStateDNI}"
+            />
+            <!--Saldo bruto-->
+            <Label
+                text="{i18n>priceInput}"
+                visible="{objTypeEmployee>/INPUTPRICE}"
+            />
 
-                <Label
-                    text="{i18n>lastNameInput}"
-                    required="true"
-                />
-                <Input
-                    id="lastname"
-                    liveChange=""
-                    placeholder="{i18n>placeHolderLasteName}"
-                />
+            <Slider
+                enableTickmarks="true"
+                min="{objTypeEmployee>/SLIDERMIN}"
+                max="{objTypeEmployee>/SLIDERMAX}"
+                step="{objTypeEmployee>/SLIDERSTEP}"
+                value="{objTypeEmployee>/SLIDERVALUE}"
+                class="sapUiLargeMarginBottom"
+                width="100%"
+                visible="{objTypeEmployee>/INPUTPRICE}"
+            />
 
-                <Label
-                    text="{i18n>cifInput}"
-                    required="true"
-                />
-                <Input
-                    id="cif"
-                    liveChange=""
-                    placeholder="{i18n>placeholderCIF}"
-                />
-
-                <Label
-                    text="{i18n>DNInput}"
-                    required="true"
-                />
-                <Input
-                    id="dni"
-                    liveChange=""
-                    placeholder="{i18n>placeholderDNI}"
-                />
-
-                <Label
-                    text="{i18n>priceInput}"
-                    required="true"
-                />
-                <Slider enableTickmarks="true" min="50000" max="200000" step="1000" class="sapUiLargeMarginBottom" width="100%"/>
-                
-                <Label
-                    text="{i18n>salary}"
-                    required="true"
-                />
-                <Slider enableTickmarks="true" min="100" max="2000" step="100" class="sapUiLargeMarginBottom" width="100%"/>
-
-                <Label
-                    text="{i18n>incorDateInput}"
-                    required="true"
-                />
-                <DatePicker dateValue="" change="" valueState="None" placeholder="{i18n>placerholderDate}"/>
-                
-            </form:SimpleForm>
-        
+            <!--Precio diario-->
+            <Label
+                text="{i18n>salary}"
+                visible="{objTypeEmployee>/INPUTSALARY}"
+            />
+            <Slider
+                enableTickmarks="true"
+                min="{objTypeEmployee>/SLIDERMIN}"
+                max="{objTypeEmployee>/SLIDERMAX}"
+                step="{objTypeEmployee>/SLIDERSTEP}"
+                value="{objTypeEmployee>/SLIDERVALUE}"
+                class="sapUiLargeMarginBottom"
+                width="100%"
+                visible="{objTypeEmployee>/INPUTSALARY}"
+            />
+            <!--Fecha-->
+            <Label
+                text="{i18n>incorDateInput}"
+                required="true"
+            />
+            <DatePicker
+                id="idate"
+                dateValue=""
+                change="validationForm"
+                placeholder="{i18n>placerholderDate}"
+                valueState="{objTypeEmployee>/SATEDATE}"
+                valueStateText="{i18n>valueStateDate}"
+            />
+        </form:SimpleForm>
     </WizardStep>
 </core:FragmentDefinition>

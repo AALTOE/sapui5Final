@@ -17,7 +17,7 @@
                 <content>
                     <!--Inicio de Wizard-->
                     <Wizard
-                        id="CreateProductWizard"
+                        id="createEmployeeWizard"
                         class="sapUiResponsivePadding--header sapUiResponsivePadding--content"
                         complete="wizardCompletedHandler"
                     >
@@ -44,7 +44,7 @@
                         <ToolbarSpacer />
                         <Button
                             text="Cancel"
-                            press="handleWizardCancel"
+                            press="cancelProgress"
                         />
                     </OverflowToolbar>
                 </footer>

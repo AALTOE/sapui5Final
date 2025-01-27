@@ -3,11 +3,38 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
 >
-    <Page
-        title="{i18n>tileEmployeeView}"
-        titleAlignment="Center"
-        showNavButton="true"
-        navButtonPress="onBack"
-    >
-    </Page>
+    <SplitApp id="masterViewEmployee">
+    <!--Página Maestra lado izquierdo-->
+        <masterPages>
+            <Page showHeader="false">
+            <!--Botón de regreso y campo de bisqueda-->
+                <Toolbar class="sapUiTinyMarginTop">
+                    <Button
+                        icon="sap-icon://nav-back"
+                        press="onBack"
+                    />
+                    <SearchField
+                        liveChange=""
+                        width="100%"
+                    />
+                </Toolbar>
+            </Page>
+        </masterPages>
+        <!--Página de detalle lado derecho-->
+        <detailPages>
+        <!--Página de información-->
+            <Page
+                id="detailSelectEmployee"
+                showHeader="false"
+            >
+                <FlexBox
+                    alignItems="Center"
+                    justifyContent="Center"
+                    height="100%"
+                >
+                    <Text text="{i18n>selecEmployee}" />
+                </FlexBox>
+            </Page>
+        </detailPages>
+    </SplitApp>
 </mvc:View>

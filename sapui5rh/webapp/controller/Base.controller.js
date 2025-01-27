@@ -1,11 +1,18 @@
 sap.ui.define(
     [
         "sap/ui/core/mvc/Controller",
-        "sap/ui/core/routing/History"
+        "sap/ui/core/routing/History",
+        "sap/m/MessageBox"
     ],
-    function (BaseController, History) {
+    function (BaseController, History, MessageBox) {
         "use strict";
 
+        /**
+        * @param {sap.ui.core.mvc.Controller} Controller
+        * @param {sap.ui.core.routing.History} History
+        * @param {sap.m.core.MessageBox} MessageBox
+        * @returns 
+        */
         return BaseController.extend("com.logali.sapui5rh.controller.Base", {
 
             onInit: function () {
@@ -28,6 +35,42 @@ sap.ui.define(
                     var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
                     oRouter.navTo("RouteView1", true);
                 }
+            },
+
+            /* FUNCIÓN QUE CANCELA EL PROGRESO DEL WIZARD Y REGRESA AL PASO 1
+            * 
+            * @author :  Alex Alto
+            * @version:  1.0
+            * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
+            */            
+            showMessageBoxCancel: function (sMessage, sMessageBoxType) {
+                MessageBox[sMessageBoxType](sMessage, {
+                    actions: [MessageBox.Action.YES, MessageBox.Action.NO],
+                    onClose: function (oAction) {
+                        if (oAction === MessageBox.Action.YES) {
+                            this._handleNavigationToStep(0);
+                            this._employeeTypeModel();
+                            this._wizard.discardProgress(this._wizard.getSteps()[0]);
+                        }
+                    }.bind(this)
+                });
+            },
+            /* FUNCIÓN QUE CANCELA EL PROGRESO DEL WIZARD Y REGRESA AL MENU PRINCIPAL
+            * 
+            * @author :  Alex Alto
+            * @version:  1.0
+            * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
+            */
+            showMessageBoxReturn: function (sMessage, sMessageBoxType) {
+                MessageBox[sMessageBoxType](sMessage, {
+                    actions: [MessageBox.Action.YES, MessageBox.Action.NO],
+                    onClose: function (oAction) {
+                        if (oAction === MessageBox.Action.YES) {
+                            this._wizard.discardProgress(this._wizard.getSteps()[0]);
+                            this.onBack();
+                        }
+                    }.bind(this)
+                });
             }
 
         });
