@@ -14,6 +14,16 @@
             "id": "@sap/generator-fiori:basic",
             "version": "1.16.2",
             "toolsId": "2577ab80-5824-40f5-b9cc-6b522cbfb08c"
+        },
+        "dataSources": {
+            "ZEMPLOYEES_SRV": {
+                "uri": "/sap/opu/odata/sap/ZEMPLOYEES_SRV/",
+                "type": "OData",
+                "settings": {
+                    "localUri": "localService/metadata.xml",
+                    "odataVersion": "2.0"
+                }
+            }
         }
     },
     "sap.ui": {
@@ -50,6 +60,19 @@
                 "type": "sap.ui.model.resource.ResourceModel",
                 "settings": {
                     "bundleName": "com.logali.sapui5rh.i18n.i18n"
+                }
+            },
+            "employeeModel": {
+                "type": "sap.ui.model.odata.v2.ODataModel",
+                "preload": true,
+                "dataSource": "ZEMPLOYEES_SRV",
+                "settings": {
+                    "defaultOperationMode": "Server",
+                    "defaultBindingMode": "TwoWay",
+                    "defaultCountMode": "Request",
+                    "refreshAfterChange": false,
+                    "useBatch": false,
+                    "defaultUpdateMethod": "Put"
                 }
             }
         },

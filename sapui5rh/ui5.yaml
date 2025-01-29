@@ -15,6 +15,12 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: http://erp13.sap4practice.com:9037
+            client: '001'
+            destination: ERP13
+            authenticationType: BasicAuthentication
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

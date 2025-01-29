@@ -28,6 +28,7 @@
             />
             <Input
                 id="iname"
+                type="Text"
                 liveChange="validationForm"
                 placeholder="{i18n>placeHolderName}"
                 valueState="{objTypeEmployee>/SATENAME}"
@@ -40,6 +41,7 @@
             />
             <Input
                 id="ilastname"
+                type="Text"
                 liveChange="validationForm"
                 placeholder="{i18n>placeHolderLasteName}"
                 valueState="{objTypeEmployee>/SATELASTNAME}"
@@ -112,7 +114,6 @@
             />
             <DatePicker
                 id="idate"
-                dateValue=""
                 change="validationForm"
                 placeholder="{i18n>placerholderDate}"
                 valueState="{objTypeEmployee>/SATEDATE}"

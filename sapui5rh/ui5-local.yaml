@@ -29,3 +29,9 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: http://erp13.sap4practice.com:9037
+            client: '001'
+            destination: ERP13
+            authenticationType: BasicAuthentication

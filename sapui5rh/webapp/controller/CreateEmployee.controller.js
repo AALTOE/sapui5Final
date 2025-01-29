@@ -43,7 +43,8 @@ sap.ui.define([
                SLIDERMIN    : 12000,
                SLIDERMAX    : 80000,
                SLIDERSTEP   : 1000,
-               SLIDERVALUE  : 24000
+               SLIDERVALUE  : 24000,
+               EMPLOYEETEXT : "Interno"
            });
            this.getView().setModel(oViewModel, "objTypeEmployee");
        },
@@ -56,11 +57,12 @@ sap.ui.define([
         */
        _selectEmployee : function (oEvent){
             //Obtenemos el texto del boton seleccionado
-            const employeeType      = oEvent.getParameters().item.getText();
+            let employeeType      = oEvent.getParameters().item.getText();
             //Obtenemos el modelo temporal
-            const oTypeEmployeeM    =this.getView().getModel("objTypeEmployee");
+            let oTypeEmployeeM    =this.getView().getModel("objTypeEmployee");
+            oTypeEmployeeM.setProperty("/EMPLOYEETEXT", employeeType);
             //Obtenemos los recursos del i18n
-            const oResourceBundle   = this.getView().getModel("i18n").getResourceBundle();
+            let oResourceBundle   = this.getView().getModel("i18n").getResourceBundle();
             //Validamos el tipo de empleado
             if(employeeType === oResourceBundle.getText("bntAut")){
                 //Establece la configuración para el empleado Autonomo
@@ -91,6 +93,7 @@ sap.ui.define([
                 }else{
                     //Establece la configuración para el empleado Interno
                     this._employeeTypeModel();
+                    this.validationForm();
                 }
             //Refresca el modelo
             oTypeEmployeeM.refresh();
@@ -102,7 +105,7 @@ sap.ui.define([
         * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
         */
        cancelProgress : function () {
-        const oResourceBundle   = this.getView().getModel("i18n").getResourceBundle();
+        let oResourceBundle   = this.getView().getModel("i18n").getResourceBundle();
         this.showMessageBoxReturn(oResourceBundle.getText("cancelMSG"), "warning");
        },
 
@@ -113,61 +116,99 @@ sap.ui.define([
         * @version:  1.0
         * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
         */
-       validationForm: function () {
+       validationForm: function (oEvent) {
             //Obtenemos los datos del modelo
-           const oTypeEmployeeM = this.getView().getModel("objTypeEmployee");
+           let oTypeEmployeeM = this.getView().getModel("objTypeEmployee");
            //Obtenemos el valor de los campos del formulario
-           const sname     = this.byId("iname").getValue();
-           const slastname = this.byId("ilastname").getValue();
-           const scif      = this.byId("icif").getValue();
-           const sdni      = this.byId("idni").getValue();
-           const sdate     = this.byId("idate").getValue();
+           let sname     = this.byId("iname").getValue();
+           let slastname = this.byId("ilastname").getValue();
+           let scif      = this.byId("icif").getValue();
+           let sdni      = this.byId("idni").getValue();
+           let sdate     = this.byId("idate").getValue();
            //Obtenemos si el empelado es autonomo
-           const isEmplAut = oTypeEmployeeM.getProperty("/EMPLOYEAUT");
+           let isEmplAut = oTypeEmployeeM.getProperty("/EMPLOYEAUT");
 
             //Validamos el campo Nombre
             if (sname) {
                 oTypeEmployeeM.setProperty("/SATENAME", "None");
+                oTypeEmployeeM.setProperty("/EMPLOYEENAME", sname);
             } else {
                 oTypeEmployeeM.setProperty("/SATENAME", "Error");
             }
 
             if (slastname) {
                 oTypeEmployeeM.setProperty("/SATELASTNAME", "None");
+                oTypeEmployeeM.setProperty("/EMPLOYEELASTNAME", slastname);
             } else {
                 oTypeEmployeeM.setProperty("/SATELASTNAME", "Error");
             }
 
             if (isEmplAut){
-                if (slastname) {
+                if (scif) {
                     oTypeEmployeeM.setProperty("/SATECIF", "None");
+                    oTypeEmployeeM.setProperty("/EMPLOYEECIF", scif);
                 } else {
                     oTypeEmployeeM.setProperty("/SATECIF", "Error");
                 }
             }else{
-                if (slastname) {
+                if (sdni) {
                     oTypeEmployeeM.setProperty("/SATEDNI", "None");
+                    oTypeEmployeeM.setProperty("/EMPLOYEEDNI", sdni);
                 } else {
                     oTypeEmployeeM.setProperty("/SATEDNI", "Error");
                 }
             }
-
             if (sdate) {
-                oTypeEmployeeM.setProperty("/SATEDATE", "None");
+                if(oEvent.getSource().isValidValue()){
+                    oTypeEmployeeM.setProperty("/SATEDATE", "None");
+                    oTypeEmployeeM.setProperty("/EMPLOYEEDATE", sdate);
+                }else{
+                    oTypeEmployeeM.setProperty("/SATEDATE", "Error");
+                }
             } else {
                 oTypeEmployeeM.setProperty("/SATEDATE", "Error");
             }
-
            
-           //Si los campos estan compeltos, habilita el paso 3
+           //Si los campos estan completos, habilita el paso 3
             if (sname && slastname && (scif || sdni) && sdate) {
                 this._wizard.validateStep(this.byId("employeesData"));
             } else {
                 //De lo contrario no muesta el botón
                 this._wizard.invalidateStep(this.byId("employeesData"));
             }
+            //Refresca el modelo
+            oTypeEmployeeM.refresh();
         },
 
+        validateDNISpain : function (dni) {
+            var number;
+            var letter;
+            var letterList;
+            var regularExp = /^\d{8}[a-zA-Z]$/;
+            //Se comprueba que el formato es válido
+            if (regularExp.test(dni) === true) {
+                //Número
+                number = dni.substr(0, dni.length - 1);
+                //Letra
+                letter = dni.substr(dni.length - 1, 1);
+                number = number % 23;
+                letterList = "TRWAGMYFPDXBNJZSQVHLCKET";
+                letterList = letterList.substring(number, number + 1);
+                if (letterList !== letter.toUpperCase()) {
+                    return false;
+                } else {
+                    return true;//Correcto
+                }
+            } else {
+                return false;//Error
+            }
+        },
+
+        setvalueComment : function (oEvent) {
+            let sComment = oEvent.getParameter("value");
+            oTypeEmployeeM.setProperty("/EMPLOYEECOMMENT", sComment);
+            oTypeEmployeeM.refresh();
+        },
         /**
          * Función que al terminar de llenar los formularios
          * envia una nueva vista para revisar los datos ingresados

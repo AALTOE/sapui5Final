@@ -18,7 +18,8 @@
             class="sapUiTinyMarginTop"
         />
         <TextArea
-            value=""
+            change="setvalueComment"
+            value="{objTypeEmployee>/EMPLOYEECOMMENT}"
             width="100%"
         />
         <UploadCollection

@@ -17,10 +17,7 @@
                     <!--Tipo-->
                     <Label text="{i18n>type}" />
                     <!--texto del tipo-->
-                    <Text
-                        id="ProductTypeChosen"
-                        text="Gernete{/productType}"
-                    />
+                    <Text text="{objTypeEmployee>/EMPLOYEETEXT}" />
                     <!--Enlace para editar el paso uno-->
                     <Link
                         press="editStepOne"
@@ -37,25 +34,49 @@
                 <form:content>
                     <!--Nombre-->
                     <Label text="{i18n>nameInput}" />
-                    <Text text="Jesús" />
+                    <Text text="{objTypeEmployee>/EMPLOYEENAME}" />
                     <!--Apellido-->
                     <Label text="{i18n>lastNameInput}" />
-                    <Text text="Hernandéz" />
+                    <Text text="{objTypeEmployee>/EMPLOYEELASTNAME}" />
                     <!--CIF-->
-                    <Label text="{i18n>cifInput}" />
-                    <Text text="12324" />
+                    <Label
+                        text="{i18n>cifInput}"
+                        visible="{objTypeEmployee>/INPUTCFI}"
+                    />
+                    <Text
+                        text="{objTypeEmployee>/EMPLOYEECIF}"
+                        visible="{objTypeEmployee>/INPUTCFI}"
+                    />
                     <!--DNI-->
-                    <Label text="{i18n>DNInput}" />
-                    <Text text="123345677" />
+                    <Label
+                        text="{i18n>DNInput}"
+                        visible="{objTypeEmployee>/INPUTDNI}"
+                    />
+                    <Text
+                        text="{objTypeEmployee>/EMPLOYEEDNI}"
+                        visible="{objTypeEmployee>/INPUTDNI}"
+                    />
                     <!--Salario bruto anual-->
-                    <Label text="{i18n>salary}" />
-                    <Text text="70000" />
+                    <Label
+                        text="{i18n>salary}"
+                        visible="{objTypeEmployee>/INPUTSALARY}"
+                    />
+                    <Text
+                        text="{objTypeEmployee>/SLIDERVALUE}"
+                        visible="{objTypeEmployee>/INPUTSALARY}"
+                    />
                     <!--Precio diario-->
-                    <Label text="{i18n>priceInput}" />
-                    <Text text="10000" />
+                    <Label
+                        text="{i18n>priceInput}"
+                        visible="{objTypeEmployee>/INPUTPRICE}"
+                    />
+                    <Text
+                        text="{objTypeEmployee>/SLIDERVALUE}"
+                        visible="{objTypeEmployee>/INPUTPRICE}"
+                    />
                     <!--Fecha-->
                     <Label text="{i18n>incorDateInput}" />
-                    <Text text="24 Ene 2025" />
+                    <Text text="{objTypeEmployee>/EMPLOYEEDATE}" />
                     <!--Enlace para editar el paso dos-->
                     <Link
                         press="editStepTwo"
@@ -72,8 +93,7 @@
                 <form:content>
                     <Label text="{i18n>inputComent}" />
                     <Text
-                        text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-								tempor incididunt ut labore et dolore magna aliqua. "
+                        text="{objTypeEmployee>/EMPLOYEECOMMENT}"
                     />
                     <Label text="{i18n>documents}" />
                     <Text text="1 archivo" />
@@ -94,7 +114,7 @@
                     />
                     <Button
                         text="Cancel"
-                        press="handleWizardCancel"
+                        press="cancelProgress"
                     />
                 </contentRight>
             </Bar>
