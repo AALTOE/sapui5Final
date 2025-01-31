@@ -109,8 +109,8 @@
             <Bar>
                 <contentRight>
                     <Button
-                        text="Submit"
-                        press="handleWizardSubmit"
+                        text="{i18n>Savebtn}"
+                        press="_CreateEmployee"
                     />
                     <Button
                         text="Cancel"

@@ -37,6 +37,8 @@ sap.ui.define(
                 }
             },
 
+            
+
             /* FUNCIÓN QUE CANCELA EL PROGRESO DEL WIZARD Y REGRESA AL PASO 1
             * 
             * @author :  Alex Alto
@@ -66,11 +68,29 @@ sap.ui.define(
                     actions: [MessageBox.Action.YES, MessageBox.Action.NO],
                     onClose: function (oAction) {
                         if (oAction === MessageBox.Action.YES) {
+                            this._handleNavigationToStep(0);
+                            this._employeeTypeModel();
                             this._wizard.discardProgress(this._wizard.getSteps()[0]);
                             this.onBack();
                         }
                     }.bind(this)
                 });
+            },
+            /* FUNCIÓN REINICIA LA APP DESDE 0 AL TERMINAR DE GUARDAR UN EMPLEADO
+            * 
+            * @author :  Alex Alto
+            * @version:  1.0
+            * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
+            */
+            saveOK : function (){
+                //Regresa al paso 1
+                this._handleNavigationToStep(0);
+                //Reinicia el modelo
+                this._employeeTypeModel();
+                //Descarta todo el progreso
+                this._wizard.discardProgress(this._wizard.getSteps()[0]);
+                //Regresa el menú principal
+                this.onBack();
             }
 
         });

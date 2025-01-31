@@ -1,11 +1,13 @@
 sap.ui.define([
     "com/logali/sapui5rh/controller/Base.controller",
-    "sap/ui/model/json/JSONModel"
-], (Base, JSONModel) => {
+    "sap/ui/model/json/JSONModel",
+    "sap/m/MessageBox"
+], (Base, JSONModel, MessageBox) => {
     "use strict";
 
      /**
      * @param {sap.ui.model.json.JSONModel} JSONModel
+     * @param {sap.m.MessageBox} MessageBox
      * @returns 
      */
 
@@ -132,6 +134,7 @@ sap.ui.define([
             if (sname) {
                 oTypeEmployeeM.setProperty("/SATENAME", "None");
                 oTypeEmployeeM.setProperty("/EMPLOYEENAME", sname);
+                sname = true;
             } else {
                 oTypeEmployeeM.setProperty("/SATENAME", "Error");
             }
@@ -139,6 +142,7 @@ sap.ui.define([
             if (slastname) {
                 oTypeEmployeeM.setProperty("/SATELASTNAME", "None");
                 oTypeEmployeeM.setProperty("/EMPLOYEELASTNAME", slastname);
+                slastname = true;
             } else {
                 oTypeEmployeeM.setProperty("/SATELASTNAME", "Error");
             }
@@ -147,27 +151,40 @@ sap.ui.define([
                 if (scif) {
                     oTypeEmployeeM.setProperty("/SATECIF", "None");
                     oTypeEmployeeM.setProperty("/EMPLOYEECIF", scif);
+                    scif = true;
                 } else {
                     oTypeEmployeeM.setProperty("/SATECIF", "Error");
+                    scif = false;
                 }
             }else{
                 if (sdni) {
                     oTypeEmployeeM.setProperty("/SATEDNI", "None");
                     oTypeEmployeeM.setProperty("/EMPLOYEEDNI", sdni);
+                    sdni = true;
                 } else {
                     oTypeEmployeeM.setProperty("/SATEDNI", "Error");
+                    sdni = false;
                 }
             }
-            if (sdate) {
-                if(oEvent.getSource().isValidValue()){
-                    oTypeEmployeeM.setProperty("/SATEDATE", "None");
-                    oTypeEmployeeM.setProperty("/EMPLOYEEDATE", sdate);
-                }else{
+            try {
+                if (sdate) {
+                    if(oEvent.getSource().isValidValue()){
+                        oTypeEmployeeM.setProperty("/SATEDATE", "None");
+                        oTypeEmployeeM.setProperty("/EMPLOYEEDATE", sdate);
+                        oTypeEmployeeM.setProperty("/EMPLOYEEDATEVALUE", oEvent.getSource().mProperties.dateValue);
+                        sdate = true;
+                    }else{
+                        oTypeEmployeeM.setProperty("/SATEDATE", "Error");
+                        sdate = false;
+                    }
+                } else {
                     oTypeEmployeeM.setProperty("/SATEDATE", "Error");
+                    sdate = false;
                 }
-            } else {
-                oTypeEmployeeM.setProperty("/SATEDATE", "Error");
+            } catch (error) {
+              
             }
+            
            
            //Si los campos estan completos, habilita el paso 3
             if (sname && slastname && (scif || sdni) && sdate) {
@@ -204,11 +221,7 @@ sap.ui.define([
             }
         },
 
-        setvalueComment : function (oEvent) {
-            let sComment = oEvent.getParameter("value");
-            oTypeEmployeeM.setProperty("/EMPLOYEECOMMENT", sComment);
-            oTypeEmployeeM.refresh();
-        },
+        
         /**
          * Función que al terminar de llenar los formularios
          * envia una nueva vista para revisar los datos ingresados
@@ -253,6 +266,53 @@ sap.ui.define([
 			this._oNavContainer.attachAfterNavigate(fnAfterNavigate);
 			this.backToWizardContent();
 		},
+
+        _CreateEmployee : function (oEvent){
+            //Obtenemos los datos del modelo
+            let oTypeEmployeeM = this.getView().getModel("objTypeEmployee");
+            let sTypeEmployee;
+            let sDNICIF;
+            if(oTypeEmployeeM.getProperty("/EMPLOYEINTER")){
+                sTypeEmployee = "0";
+                sDNICIF = oTypeEmployeeM.getProperty("/EMPLOYEEDNI");
+            }else if(oTypeEmployeeM.getProperty("/EMPLOYEAUT")){
+                sTypeEmployee = "1";
+                sDNICIF = oTypeEmployeeM.getProperty("/EMPLOYEECIF");
+            }else if(oTypeEmployeeM.getProperty("/EMPLOYEGER")){
+                sTypeEmployee = "2";
+                sDNICIF = oTypeEmployeeM.getProperty("/EMPLOYEEDNI");
+            }
+
+            var body = {
+                Type        : sTypeEmployee,
+                SapId       : "alex.alto.espiri@gmail.com",
+                FirstName   : oTypeEmployeeM.getProperty("/EMPLOYEENAME"),
+                LastName    : oTypeEmployeeM.getProperty("/EMPLOYEELASTNAME"),
+                Dni         : sDNICIF,
+                CreationDate: oTypeEmployeeM.getProperty("/EMPLOYEEDATEVALUE"), 
+                Comments    : oTypeEmployeeM.getProperty("/EMPLOYEECOMMENT")
+            };
+
+            body.UserToSalary = [{
+                Amount  : parseFloat(oTypeEmployeeM.getProperty("/SLIDERVALUE")).toString(),
+                Comments: oTypeEmployeeM.getProperty("/EMPLOYEECOMMENT"),
+                Waers   : "EUR"
+            }];
+
+            this.getView().getModel("employeeModel").create("/Users", body, {
+                success: function (oData) {
+                    sap.m.MessageBox.information(this.oView.getModel("i18n").getResourceBundle().getText("newEmployeeMSG") + oData.EmployeeId,{
+                    onClose : function(){
+                            this.saveOK();
+                        }.bind(this)
+                    });
+
+                }.bind(this),
+                error: function () {
+                    sap.m.MessageToast.show("ERROR");
+                }.bind(this)
+            })
+        }
 
     });
 });
