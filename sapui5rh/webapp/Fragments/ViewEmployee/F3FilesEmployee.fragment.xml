@@ -1,0 +1,19 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+>
+    <UploadCollection
+        id="upliadCollection2"
+        maximumFilenameLength="55"
+        maximumFileSize="10"
+        multiple="true"
+        sameFilenameAllowed="true"
+        instantUpload="true"
+        uploadUrl=""
+        change="onFileChange"
+        uploadComplete="onFileUploadComplete"
+        beforeUploadStarts="onFileBeforeUpload"
+        fileDeleted="onFiledeleted"
+    />
+</core:FragmentDefinition>

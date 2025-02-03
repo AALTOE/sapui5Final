@@ -1,0 +1,37 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+>
+    <IconTabBar
+        selectedKey="key3"
+        upperCase="true"
+        class="sapUiResponsiveContentPadding"
+    >
+        <items>
+            <IconTabFilter
+                key="attachments"
+                icon="sap-icon://attachment"
+                text="{i18n>txtFile}"
+            >
+            <!--Fragment de archivos del empleado -->
+            <core:Fragment
+                fragmentName="com.logali.sapui5rh.Fragments.ViewEmployee.F3FilesEmployee"
+                type="XML"
+            />
+            </IconTabFilter>
+
+            <IconTabFilter
+                key="notes"
+                icon="sap-icon://money-bills"
+                text="{i18n>txtHistory}"
+            >
+            <!--Fragment del historial del empleado -->
+            <core:Fragment
+                fragmentName="com.logali.sapui5rh.Fragments.ViewEmployee.F4Historyemployee"
+                type="XML"
+            />
+            </IconTabFilter>
+        </items>
+    </IconTabBar>
+</core:FragmentDefinition>

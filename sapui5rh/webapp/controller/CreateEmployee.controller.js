@@ -301,7 +301,7 @@ sap.ui.define([
 
             this.getView().getModel("employeeModel").create("/Users", body, {
                 success: function (oData) {
-                    sap.m.MessageBox.information(this.oView.getModel("i18n").getResourceBundle().getText("newEmployeeMSG") + oData.EmployeeId,{
+                    sap.m.MessageBox.information(this.oView.getModel("i18n").getResourceBundle().getText("newEmployeeMSG",oData.EmployeeId),{
                     onClose : function(){
                             this.saveOK();
                         }.bind(this)

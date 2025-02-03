@@ -1,30 +1,54 @@
 <mvc:View
     controllerName="com.logali.sapui5rh.controller.ViewEmployee"
     xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
     xmlns="sap.m"
 >
-    <SplitApp id="masterViewEmployee">
-    <!--Página Maestra lado izquierdo-->
+    <SplitApp
+        id="masterViewEmployee"
+        initialMaster="masterEmployee"
+        initialDetail="selectEmployeePage"
+    >
+        <!--Página Maestra lado izquierdo-->
         <masterPages>
-            <Page showHeader="false">
-            <!--Botón de regreso y campo de bisqueda-->
+            <Page
+                id="masterEmployee"
+                showHeader="false"
+            >
+                <!--Botón de regreso y campo de bisqueda-->
                 <Toolbar class="sapUiTinyMarginTop">
                     <Button
                         icon="sap-icon://nav-back"
                         press="onBack"
                     />
                     <SearchField
-                        liveChange=""
+                        liveChange="onFilterEmployees"
                         width="100%"
                     />
                 </Toolbar>
+                <!--Lista de empleados que proviene del ODATA, se realiza un filtro por SapId-->
+                <List
+                    id="listEmployees"
+                    items="{path : 'employeeModel>/Users',
+                            filters:[{path:'SapId',operator:'EQ',value1:'alex.alto.espiri@gmail.com'}]}"
+                    mode="SingleSelectMaster"
+                    selectionChange="onPressNavToDetail"
+                >
+                    <items>
+                        <StandardListItem
+                            title="{employeeModel>FirstName} {employeeModel>LastName}"
+                            description="{i18n>DNInput}: {employeeModel>Dni} | {i18n>txtID} {employeeModel>EmployeeId}"
+                            type="Active"
+                        />
+                    </items>
+                </List>
             </Page>
         </masterPages>
         <!--Página de detalle lado derecho-->
         <detailPages>
-        <!--Página de información-->
+            <!--Página de información-->
             <Page
-                id="detailSelectEmployee"
+                id="selectEmployeePage"
                 showHeader="false"
             >
                 <FlexBox
@@ -32,8 +56,36 @@
                     justifyContent="Center"
                     height="100%"
                 >
+                    <!--Texto infomrativo-->
                     <Text text="{i18n>selecEmployee}" />
                 </FlexBox>
+            </Page>
+            <!--Página de detalle con información-->
+            <Page
+                id="detailSelectEmployeePage"
+                showHeader="true"
+                title="{i18n>titleDetailPage}"
+                titleAlignment="Center"
+            >
+                <!--Fragment del ObjectHeader con datos del Empleado -->
+                <core:Fragment
+                    fragmentName="com.logali.sapui5rh.Fragments.ViewEmployee.F1ObjectHeaderEmployee"
+                    type="XML"
+                />
+                <!--Footer -->
+                <footer>
+                    <OverflowToolbar>
+                        <ToolbarSpacer />
+                        <Button
+                            text="{i18n>btndownEmployee}"
+                            press="showConfirmDelete"
+                        />
+                        <Button
+                            text="{i18n>btnupEmployee}"
+                            press="upgradeEmployee"
+                        />
+                    </OverflowToolbar>
+                </footer>
             </Page>
         </detailPages>
     </SplitApp>

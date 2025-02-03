@@ -1,0 +1,41 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+>
+    <!--Icon, Nombre y DNI del empleado-->
+    <ObjectHeader
+        responsive="true"
+        fullScreenOptimized="false"
+        icon="{path : 'employeeModel>Type',
+               formatter : '.formatter.iconType'}"
+        intro="{employeeModel>Dni}"
+        title="{employeeModel>FirstName} {employeeModel>LastName}"
+        class="sapUiResponsivePadding--header"
+    >
+        <!--Fecha de incorporación, se le da formato a la fecha-->
+        <ObjectAttribute
+            title="{i18n>incorDateInput}"
+            text="{path : 'employeeModel>CreationDate', type:'sap.ui.model.type.Date', 
+            formatOptions: {style: 'long'}}"
+        />
+        <!--Tipo de empleado-->
+        <ObjectAttribute
+            title="{i18n>typeEmployee}"
+            text="{path : 'employeeModel>Type',
+               formatter : '.formatter.employeeType'}"
+        />
+        <!--Comentario-->
+        <ObjectAttribute
+            title="{i18n>inputComent}"
+            text="{employeeModel>Comments}"
+        />
+        <headerContainer>
+            <!--Fragment del IconBar -->
+            <core:Fragment
+                fragmentName="com.logali.sapui5rh.Fragments.ViewEmployee.F2IconTabEmployee"
+                type="XML"
+            />
+        </headerContainer>
+    </ObjectHeader>
+</core:FragmentDefinition>
