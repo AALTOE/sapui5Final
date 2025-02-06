@@ -21,7 +21,7 @@
                     <!--Enlace para editar el paso uno-->
                     <Link
                         press="editStepOne"
-                        text="Edit"
+                        text="Editar"
                     />
                 </form:content>
             </form:SimpleForm>
@@ -80,7 +80,7 @@
                     <!--Enlace para editar el paso dos-->
                     <Link
                         press="editStepTwo"
-                        text="Edit"
+                        text="Editar"
                     />
                 </form:content>
             </form:SimpleForm>
@@ -96,11 +96,17 @@
                         text="{objTypeEmployee>/EMPLOYEECOMMENT}"
                     />
                     <Label text="{i18n>documents}" />
-                    <Text text="1 archivo" />
+                    <Text text="{objTypeEmployee>/_numFiles} {i18n>ficheros}"/>
+				<Label></Label>
+                    <List items="{objTypeEmployee>/_files}">
+					<items>
+						<StandardListItem title="{objTypeEmployee>DocName}"></StandardListItem>
+					</items>
+				</List>
                     <!--Enlace para editar el paso tres-->
                     <Link
                         press="editStepThree"
-                        text="Edit"
+                        text="Editar"
                     />
                 </form:content>
             </form:SimpleForm>

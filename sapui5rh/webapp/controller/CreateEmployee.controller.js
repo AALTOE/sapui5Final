@@ -228,6 +228,23 @@ sap.ui.define([
          */
         wizardCompletedHandler: function () {
             this._oNavContainer.to(this.byId("wizardReviewPage"));
+            //Se obtiene los archivos subidos
+				var uploadCollection = this.byId("uploadCollection");
+				var files = uploadCollection.getItems();
+				var numFiles = uploadCollection.getItems().length;
+                let oTypeEmployeeM = this.getView().getModel("objTypeEmployee");
+				oTypeEmployeeM.setProperty("/_numFiles",numFiles);
+				if (numFiles > 0) {
+					var arrayFiles = [];
+					for(var i in files){
+						arrayFiles.push({DocName:files[i].getFileName(),MimeType:files[i].getMimeType()});	
+					}
+					oTypeEmployeeM.setProperty("/_files",arrayFiles);
+				}else{
+					oTypeEmployeeM.setProperty("/_files",[]);
+				}
+               //Refresca el modelo
+            oTypeEmployeeM.refresh(); 
         },
         /**
          * Función que regresa al Wizard
@@ -301,9 +318,12 @@ sap.ui.define([
 
             this.getView().getModel("employeeModel").create("/Users", body, {
                 success: function (oData) {
+                    oTypeEmployeeM.setProperty("/IDNEWUSER", oData.EmployeeId)
                     sap.m.MessageBox.information(this.oView.getModel("i18n").getResourceBundle().getText("newEmployeeMSG",oData.EmployeeId),{
+                    
                     onClose : function(){
-                            this.saveOK();
+                            //this.saveOK();
+                            this.onStartUpload();
                         }.bind(this)
                     });
 
@@ -312,7 +332,32 @@ sap.ui.define([
                     sap.m.MessageToast.show("ERROR");
                 }.bind(this)
             })
-        }
+        },
+        onFileChange : function (oEvent) {
+            let oUploadCollection = oEvent.getSource();
+            let oCustomerHeaderToken = new sap.m.UploadCollectionParameter({
+              name: "x-csrf-token",
+              value: this.getView().getModel("employeeModel").getSecurityToken()
+            });
+            oUploadCollection.addHeaderParameter(oCustomerHeaderToken);
+        },
+  
+         onStartUpload : function () {
+            var that = this;
+            var oUploadCollection = that.byId("uploadCollection");
+            oUploadCollection.upload();
+        },
+
+        onFileBeforeUpload : function (oEvent){
+            let oTypeEmployeeM = this.getView().getModel("objTypeEmployee");
+            let fileName = oEvent.getParameter("fileName");
+            let oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
+              name : "slug",
+              value : this.getOwnerComponent().SapId+";"+oTypeEmployeeM.getProperty("/IDNEWUSER")+";"+fileName
+            });
+            oEvent.getParameters().addHeaderParameter(oCustomerHeaderSlug);
+        },
+
 
     });
 });

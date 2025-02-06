@@ -23,17 +23,16 @@
             width="100%"
         />
         <UploadCollection
-            id="upliadCollection"
+            id="uploadCollection"
             maximumFilenameLength="55"
             maximumFileSize="10"
             multiple="true"
             sameFilenameAllowed="true"
-            instantUpload="true"
-            uploadUrl="/sap/opu/odata/sap/YSAPUI5_SRV_01/FilesSet"
+            instantUpload="false"
+            uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments"
             change="onFileChange"
-            uploadComplete="onFileUploadComplete"
             beforeUploadStarts="onFileBeforeUpload"
-            fileDeleted="onFiledeleted"
+            noDataDescription="arrastrarficheros"
         />
     </WizardStep>
 </core:FragmentDefinition>
