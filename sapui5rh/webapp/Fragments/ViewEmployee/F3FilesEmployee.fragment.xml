@@ -10,7 +10,7 @@
         multiple="true"
         sameFilenameAllowed="true"
         instantUpload="true"
-        uploadUrl=""
+        uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments"
         change="onFileChange"
         uploadComplete="onFileUploadComplete"
         beforeUploadStarts="onFileBeforeUpload"

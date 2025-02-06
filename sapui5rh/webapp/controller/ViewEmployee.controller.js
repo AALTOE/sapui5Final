@@ -213,10 +213,54 @@ sap.ui.define([
               template : new sap.m.UploadCollectionItem({
                 documentId : "{employeeModel>AttId}",
                 visibleEdit : false,
-                fileName : "{employeeModel>FileName}"
+                fileName : "{employeeModel>DocName}"
               }).attachPress(this.downloadFile)
             })
+        },
+
+        onFileBeforeUpload : function (oEvent){
+            let fileName = oEvent.getParameter("fileName");
+            let objContext = oEvent.getSource().getBindingContext("employeeModel").getObject();
+            let oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
+              name : "slug",
+              value : objContext.SapId+";"+objContext.EmployeeId+";"+fileName
+            });
+            oEvent.getParameters().addHeaderParameter(oCustomerHeaderSlug);
+        },
+  
+        onFileChange : function (oEvent) {
+            let oUploadCollection = oEvent.getSource();
+            let oCustomerHeaderToken = new sap.m.UploadCollectionParameter({
+              name: "x-csrf-token",
+              value: this.getView().getModel("employeeModel").getSecurityToken()
+            });
+            oUploadCollection.addHeaderParameter(oCustomerHeaderToken);
+        },
+  
+        onFileUploadComplete : function(oEvent){
+            oEvent.getSource().getBinding("items").refresh();
+        },
+
+        onFiledeleted : function (oEvent) {
+            var oUploadCollection = oEvent.getSource();
+            var sPath = oEvent.getParameter("item").getBindingContext("employeeModel").getPath();
+            this.getView().getModel("employeeModel").remove(sPath, {
+              success : function (){
+                oUploadCollection.getBinding("items").refresh();
+              },
+              error : function (){
+  
+              }
+            });
+          },
+  
+          /**
+           * Función que descarga los archivos
+           * @param {*} oEvent 
+           */
+          downloadFile : function (oEvent) {
+            const sPath = oEvent.getSource().getBindingContext("employeeModel").getPath();
+            window.open("/sap/opu/odata/sap/ZEMPLOYEES_SRV/" + sPath + "/$value") ;
           }
-        
     });
 });
