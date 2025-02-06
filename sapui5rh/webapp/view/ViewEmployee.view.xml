@@ -82,7 +82,7 @@
                         />
                         <Button
                             text="{i18n>btnupEmployee}"
-                            press="upgradeEmployee"
+                            press="showUpgrateEmployee"
                         />
                     </OverflowToolbar>
                 </footer>

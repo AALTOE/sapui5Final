@@ -25,7 +25,8 @@ sap.ui.define([
             var oViewModel;
             oViewModel = new JSONModel({
                SPATH	    : "",
-               EMPLOYEEID	: ""
+               EMPLOYEEID	: "",
+               EnableSave   : false
            });
            this.getView().setModel(oViewModel, "objEmployeeInfo");
         },
@@ -67,6 +68,8 @@ sap.ui.define([
             oDataEmployee.setProperty("/EMPLOYEEID", oContext.substring(19, 23));
             //Refresca el modelo
             oDataEmployee.refresh();
+            //Obtenemos los ficheros
+            this._oDataGetFiles(oDataEmployee.getProperty("/EMPLOYEEID"));   
 		},
         /**
          * FUNCIÓN QUE INVOCA UN MENSAJE DE CONFIRMACIÓN ANTES DE ELIMINAR EL EMPLEADO
@@ -102,10 +105,118 @@ sap.ui.define([
             sap.m.MessageToast.show(oResourceBundle.getText("txtDeleteEmployeeOK", oDataEmployee.getProperty("/EMPLOYEEID")));
             //Navegamos hacia la página que muestra un solo mensaje
 			this.getMasterPageObject.to(this.createId("selectEmployeePage"));
-            //Refrescamos los datos de la litsa
+            //Refrescamos los datos de la lista
             var oList = this.getView().byId("listEmployees");
             oList.getBinding("items").refresh(true);
-        }
+        },
+
+        showUpgrateEmployee : function (oEvent) {
+            if (!this.oMPDialog) {
+				this.oMPDialog = this.loadFragment({
+					name: "com.logali.sapui5rh.Fragments.ViewEmployee.F5UpgrateEmployee"
+				});
+			}
+			this.oMPDialog.then(function (oDialog) {
+				this.oDialog = oDialog;
+				this.oDialog.open();
+			}.bind(this));
+        },
+
+        _closeDialog: function () {
+			this.oDialog.close();
+		},
+
+        validSlary : function (oEvent) {
+            const sValue = oEvent.getParameters().value;
+            let context = oEvent.getSource();
+            const oDataEmployee =this.getView().getModel("objEmployeeInfo");
+            let oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
+            if(sValue === "" | undefined){
+                context.setValueState("Error");
+                context.setValueStateText(oResourceBundle.getText("txtMessageSalary"));
+                oDataEmployee.setProperty("/VALIDSALARY", false);
+            }else{
+                context.setValueState("None");
+                oDataEmployee.setProperty("/VALIDSALARY", true);
+            }
+            oDataEmployee.refresh();
+            this.enableSaveButton();
+        },
+
+        validDate : function (oEvent) {
+            let context = oEvent.getSource();
+            const oDataEmployee =this.getView().getModel("objEmployeeInfo");
+            let oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
+            //Validamos la fecha
+            if (!oEvent.getSource().isValidValue()) {
+                context.setValueState("Error");
+                context.setValueStateText(oResourceBundle.getText("valueStateDate"));
+                oDataEmployee.setProperty("/VALIDDATE", false);
+            } else {
+                context.setValueState("None");
+                oDataEmployee.setProperty("/VALIDDATE", true);
+            }
+            oDataEmployee.refresh();
+            this.enableSaveButton();
+        },
+
+        enableSaveButton : function (){
+            const oDataEmployee =this.getView().getModel("objEmployeeInfo");
+            if(oDataEmployee.getProperty("/VALIDSALARY") && oDataEmployee.getProperty("/VALIDDATE")){
+                oDataEmployee.setProperty("/EnableSave", true);
+            }else{
+                oDataEmployee.setProperty("/EnableSave", false);
+            }
+            oDataEmployee.refresh();
+        },
+
+        upgrateEmployee : function (oEvent) {
+            this.getView().setBusy(true);
+            const oDataEmployee = this.getView().getModel("objEmployeeInfo");
+            const sEmployeeID   = oDataEmployee.getProperty("/EMPLOYEEID");
+            const sAmount       = this.byId("inputAmount").getValue();
+            const dCreationDate = this.byId("inputCreationDate").mProperties.dateValue;
+            const sComments     = this.byId("inputComments").getValue();
+
+            var body = {
+                Amount      : sAmount,
+                CreationDate: dCreationDate,
+                Comments    : sComments,
+                SapId       : "alex.alto.espiri@gmail.com",
+                EmployeeId  : sEmployeeID,
+                Waers       : "EUR"
+            };
+            this.getView().getModel("employeeModel").create("/Salaries", body, {
+                success: function () {
+                    sap.m.MessageToast.show("good");
+                    this._closeDialog();
+                    //Refrescamos los datos de la lista
+                    const oList = this.getView().byId("idTimeline");
+                    oList.insertContent("employeeModel>Comments")
+                    this.getView().setBusy(false);
+                }.bind(this),
+                error: function () {
+                    this.getView().setBusy(false);
+                    sap.m.MessageToast.show("Error");
+                }.bind(this)
+            });
+        },
+
+        _oDataGetFiles : function (EmployeeID){
+            //Bind file
+            this.byId("uploadCollectionEmployee").bindAggregation("items", {
+              path : "employeeModel>/Attachments",
+              filters : [
+                new Filter("EmployeeId",FilterOperator.EQ,EmployeeID)/*,
+                new Filter("SapId",FilterOperator.EQ,this.getOwnerComponent().SapId)*/
+              ],
+              template : new sap.m.UploadCollectionItem({
+                documentId : "{employeeModel>AttId}",
+                visibleEdit : false,
+                fileName : "{employeeModel>FileName}"
+              }).attachPress(this.downloadFile)
+            })
+          }
         
     });
 });

@@ -1,0 +1,66 @@
+<core:FragmentDefinition
+    xmlns:f="sap.ui.layout.form"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+>
+    <!--Dialogo-->
+    <Dialog
+        id="mainDialog"
+        title="{i18n>titleDialog}"
+    >
+        <content>
+            <f:SimpleForm
+                id="formSalary"
+                editable="true"
+                columnsM="1"
+                columnsL="1"
+                columnsXL="1"
+            >
+                <f:content>
+                    <!--Salario-->
+                    <Label text="{i18n>labelSalary}" />
+                    <Input
+                        id="inputAmount"
+                        type="Number"
+                        change="validSlary"
+                        required="true"
+                    />
+                    <!--Fecha-->
+                    <Label text="{i18n>labelDate}" />
+                    <DatePicker
+                        id="inputCreationDate"
+                        required="true"
+                        change="validDate"
+                        placeholder="{i18n>placerholderDate}"
+                    />
+                    <!--Comentario-->
+                    <Label text="{i18n>inputComent}" />
+                    <TextArea id="inputComments" />
+                </f:content>
+            </f:SimpleForm>
+        </content>
+        <!--Footer-->
+        <footer>
+            <Toolbar>
+                <content>
+                    <ToolbarSpacer />
+                    <!--Aceptar-->
+                    <Button
+                        type="Accept"
+                        text="{i18n>btnSave}"
+                        press="upgrateEmployee"
+                        enabled="{objEmployeeInfo>/EnableSave}"
+                    />
+                    <!--Cancelar-->
+                    <Button
+                        id="Reject"
+                        text="{i18n>btnCancel}"
+                        type="Reject"
+                        press="._closeDialog"
+                    />
+                </content>
+            </Toolbar>
+        </footer>
+    </Dialog>
+</core:FragmentDefinition>
