@@ -36,6 +36,47 @@ sap.ui.define(
                     oRouter.navTo("RouteView1", true);
                 }
             },
+            /**
+            * FUNCIÓN QUE VALIDA CON UNA EXPRESION REGULAR, QUE EL VALOR CONTEGA SOLO LETRAS
+            * @author : Alex Alto
+            * @param  : {*} oEvent
+            * @version: 1.0
+            * @returns: true | false
+            * @History: La primera versión fue escrita por Alex Alto Feb - 2025
+            */
+            validOnlyText: function (sValue) {
+                let regex = /^[a-zA-Z\s]*$/; 
+                if (regex.test(sValue)) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            },
+
+            validateDNISpain : function (dni) {
+                var number;
+                var letter;
+                var letterList;
+                var regularExp = /^\d{8}[a-zA-Z]$/;
+                //Se comprueba que el formato es válido
+                if (regularExp.test(dni) === true) {
+                    //Número
+                    number = dni.substr(0, dni.length - 1);
+                    //Letra
+                    letter = dni.substr(dni.length - 1, 1);
+                    number = number % 23;
+                    letterList = "TRWAGMYFPDXBNJZSQVHLCKET";
+                    letterList = letterList.substring(number, number + 1);
+                    if (letterList !== letter.toUpperCase()) {
+                        return false;
+                    } else {
+                        return true;//Correcto
+                    }
+                } else {
+                    return false;//Error
+                }
+            },
 
             
 

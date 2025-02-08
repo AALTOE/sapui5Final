@@ -22,11 +22,13 @@ sap.ui.define([
             this._oWizardContentPage = this.byId("wizardContentPage");
             //Iniciamos el modelo 
             this._employeeTypeModel();
+            //Variable global del modelo
+            this.oTypeEmployeeM = this.getView().getModel("objTypeEmployee");
         },
 
-        /* FUNCIÓN QUE CREA UN MODELO TEMPORAL PARA EL TIPO DE EMPLEADO 
-        *  "INTERNO" "AUTONOMO" "GERENTE", POR DEFAULT SE GENERA COMO "INTERNO"
-        * 
+        /**
+        * FUNCIÓN QUE CREA UN MODELO TEMPORAL PARA EL TIPO DE EMPLEADO 
+        * "INTERNO" "AUTONOMO" "GERENTE", POR DEFAULT SE GENERA COMO "INTERNO"
         * @author :  Alex Alto
         * @version:  1.0
         * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
@@ -50,9 +52,9 @@ sap.ui.define([
            });
            this.getView().setModel(oViewModel, "objTypeEmployee");
        },
-        /* FUNCIÓN QUE HABILITAR los CAMPOS DEL FOMRULARIO,
-        *  DEPENDIENDO EL TIPO DE EMPLEADO
-        * 
+        /**
+        * FUNCIÓN QUE HABILITAR los CAMPOS DEL FOMRULARIO,
+        * DEPENDIENDO EL TIPO DE EMPLEADO
         * @author :  Alex Alto
         * @version:  1.0
         * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
@@ -60,48 +62,47 @@ sap.ui.define([
        _selectEmployee : function (oEvent){
             //Obtenemos el texto del boton seleccionado
             let employeeType      = oEvent.getParameters().item.getText();
-            //Obtenemos el modelo temporal
-            let oTypeEmployeeM    =this.getView().getModel("objTypeEmployee");
-            oTypeEmployeeM.setProperty("/EMPLOYEETEXT", employeeType);
+            //Obtenemos el modelo
+            this.oTypeEmployeeM.setProperty("/EMPLOYEETEXT", employeeType);
             //Obtenemos los recursos del i18n
             let oResourceBundle   = this.getView().getModel("i18n").getResourceBundle();
             //Validamos el tipo de empleado
             if(employeeType === oResourceBundle.getText("bntAut")){
                 //Establece la configuración para el empleado Autonomo
-                oTypeEmployeeM.setProperty("/EMPLOYEINTER", false); //Interno
-                oTypeEmployeeM.setProperty("/EMPLOYEAUT", true);    //Autonomo
-                oTypeEmployeeM.setProperty("/EMPLOYEGER", false);   //Gerente
-                oTypeEmployeeM.setProperty("/INPUTDNI", false);     //DNI
-                oTypeEmployeeM.setProperty("/INPUTCFI", true);      //CFI
-                oTypeEmployeeM.setProperty("/INPUTPRICE", true);    //Precio diario    
-                oTypeEmployeeM.setProperty("/INPUTSALARY", false);  //Saldo bruto anual
-                oTypeEmployeeM.setProperty("/SLIDERMIN", 100);      //Valor minumo
-                oTypeEmployeeM.setProperty("/SLIDERMAX", 2000);     //Valor maximo  
-                oTypeEmployeeM.setProperty("/SLIDERSTEP", 100);     //Intervalo
-                oTypeEmployeeM.setProperty("/SLIDERVALUE", 400);    //Valor por defecto    
+                this.oTypeEmployeeM.setProperty("/EMPLOYEINTER", false); //Interno
+                this.oTypeEmployeeM.setProperty("/EMPLOYEAUT", true);    //Autonomo
+                this.oTypeEmployeeM.setProperty("/EMPLOYEGER", false);   //Gerente
+                this.oTypeEmployeeM.setProperty("/INPUTDNI", false);     //DNI
+                this.oTypeEmployeeM.setProperty("/INPUTCFI", true);      //CFI
+                this.oTypeEmployeeM.setProperty("/INPUTPRICE", true);    //Precio diario    
+                this.oTypeEmployeeM.setProperty("/INPUTSALARY", false);  //Saldo bruto anual
+                this.oTypeEmployeeM.setProperty("/SLIDERMIN", 100);      //Valor minumo
+                this.oTypeEmployeeM.setProperty("/SLIDERMAX", 2000);     //Valor maximo  
+                this.oTypeEmployeeM.setProperty("/SLIDERSTEP", 100);     //Intervalo
+                this.oTypeEmployeeM.setProperty("/SLIDERVALUE", 400);    //Valor por defecto    
             }else if(employeeType === oResourceBundle.getText("btnGer")){
                 //Establece la configuración para el empleado Gerente
-                    oTypeEmployeeM.setProperty("/EMPLOYEINTER", false);
-                    oTypeEmployeeM.setProperty("/EMPLOYEAUT", false);
-                    oTypeEmployeeM.setProperty("/EMPLOYEGER", true);
-                    oTypeEmployeeM.setProperty("/INPUTDNI", true);
-                    oTypeEmployeeM.setProperty("/INPUTCFI", false);
-                    oTypeEmployeeM.setProperty("/INPUTPRICE", false);
-                    oTypeEmployeeM.setProperty("/INPUTSALARY", true);
-                    oTypeEmployeeM.setProperty("/SLIDERMIN", 50000);
-                    oTypeEmployeeM.setProperty("/SLIDERMAX", 200000);
-                    oTypeEmployeeM.setProperty("/SLIDERSTEP", 1000);
-                    oTypeEmployeeM.setProperty("/SLIDERVALUE", 70000);
+                    this.oTypeEmployeeM.setProperty("/EMPLOYEINTER", false);
+                    this.oTypeEmployeeM.setProperty("/EMPLOYEAUT", false);
+                    this.oTypeEmployeeM.setProperty("/EMPLOYEGER", true);
+                    this.oTypeEmployeeM.setProperty("/INPUTDNI", true);
+                    this.oTypeEmployeeM.setProperty("/INPUTCFI", false);
+                    this.oTypeEmployeeM.setProperty("/INPUTPRICE", false);
+                    this.oTypeEmployeeM.setProperty("/INPUTSALARY", true);
+                    this.oTypeEmployeeM.setProperty("/SLIDERMIN", 50000);
+                    this.oTypeEmployeeM.setProperty("/SLIDERMAX", 200000);
+                    this.oTypeEmployeeM.setProperty("/SLIDERSTEP", 1000);
+                    this.oTypeEmployeeM.setProperty("/SLIDERVALUE", 70000);
                 }else{
                     //Establece la configuración para el empleado Interno
                     this._employeeTypeModel();
                     this.validationForm();
                 }
             //Refresca el modelo
-            oTypeEmployeeM.refresh();
+            this.oTypeEmployeeM.refresh();
        },
-       /* FUNCIÓN QUE MUESTRA UN MENSAJE DE CONFIRMACIÓN PARA CANCELA EL PROGRESO
-        * 
+       /**
+        * FUNCIÓN QUE MUESTRA UN MENSAJE DE CONFIRMACIÓN PARA CANCELA EL PROGRESO
         * @author :  Alex Alto
         * @version:  1.0
         * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
@@ -110,121 +111,133 @@ sap.ui.define([
         let oResourceBundle   = this.getView().getModel("i18n").getResourceBundle();
         this.showMessageBoxReturn(oResourceBundle.getText("cancelMSG"), "warning");
        },
-
-       /* FUNCIÓN QUE VALIDA SI ESTA COMPLETO EL FOMRULARIO PARA HABILITAR
-        * EL PASO 3
-        * 
-        * @author :  Alex Alto
-        * @version:  1.0
-        * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
+       /**
+        * FUNCIÓN QUE VALIDA EL CAMPO NOMBRE CON SOLO LETRAS
+        * @author : Alex Alto
+        * @param  : {*} oEvent
+        * @version: 1.0
+        * @History: La primera versión fue escrita por Alex Alto Feb - 2025
         */
-       validationForm: function (oEvent) {
-            //Obtenemos los datos del modelo
-           let oTypeEmployeeM = this.getView().getModel("objTypeEmployee");
-           //Obtenemos el valor de los campos del formulario
-           let sname     = this.byId("iname").getValue();
-           let slastname = this.byId("ilastname").getValue();
-           let scif      = this.byId("icif").getValue();
-           let sdni      = this.byId("idni").getValue();
-           let sdate     = this.byId("idate").getValue();
-           //Obtenemos si el empelado es autonomo
-           let isEmplAut = oTypeEmployeeM.getProperty("/EMPLOYEAUT");
-
-            //Validamos el campo Nombre
-            if (sname) {
-                oTypeEmployeeM.setProperty("/SATENAME", "None");
-                oTypeEmployeeM.setProperty("/EMPLOYEENAME", sname);
-                sname = true;
-            } else {
-                oTypeEmployeeM.setProperty("/SATENAME", "Error");
+        _validName: function (oEvent) {
+            let sName = oEvent.getParameter("value");
+            if (this.validOnlyText(sName) && sName != '') {
+                this.oTypeEmployeeM.setProperty("/SATENAME", "Success");
+                this.oTypeEmployeeM.setProperty("/EMPLOYEENAME", sName);
             }
-
-            if (slastname) {
-                oTypeEmployeeM.setProperty("/SATELASTNAME", "None");
-                oTypeEmployeeM.setProperty("/EMPLOYEELASTNAME", slastname);
-                slastname = true;
-            } else {
-                oTypeEmployeeM.setProperty("/SATELASTNAME", "Error");
+            else {
+                this.oTypeEmployeeM.setProperty("/SATENAME", "Error");
             }
-
-            if (isEmplAut){
-                if (scif) {
-                    oTypeEmployeeM.setProperty("/SATECIF", "None");
-                    oTypeEmployeeM.setProperty("/EMPLOYEECIF", scif);
-                    scif = true;
-                } else {
-                    oTypeEmployeeM.setProperty("/SATECIF", "Error");
-                    scif = false;
-                }
-            }else{
-                if (sdni) {
-                    oTypeEmployeeM.setProperty("/SATEDNI", "None");
-                    oTypeEmployeeM.setProperty("/EMPLOYEEDNI", sdni);
-                    sdni = true;
-                } else {
-                    oTypeEmployeeM.setProperty("/SATEDNI", "Error");
-                    sdni = false;
-                }
+            this.oTypeEmployeeM.refresh();
+            this.validationForm();
+        },
+        /**
+        * FUNCIÓN QUE VALIDA EL CAMPO APELLIDOS CON SOLO LETRAS
+        * @author : Alex Alto
+        * @param  : {*} oEvent
+        * @version: 1.0
+        * @History: La primera versión fue escrita por Alex Alto Feb - 2025
+        */
+        _validLastName: function (oEvent) {
+            let sLastName = oEvent.getParameter("value");
+            if (this.validOnlyText(sLastName) && sLastName != '') {
+                this.oTypeEmployeeM.setProperty("/SATELASTNAME", "Success");
+                this.oTypeEmployeeM.setProperty("/EMPLOYEELASTNAME", sLastName);
             }
+            else {
+                this.oTypeEmployeeM.setProperty("/SATELASTNAME", "Error");
+            }
+            this.oTypeEmployeeM.refresh();
+            this.validationForm();
+        },
+        /**
+        * FUNCIÓN QUE VALIDA EL FOMATO DEL CAMPO DNI EN ESPAÑA
+        * EJEMPLO: 01234567L
+        * @author : Alex Alto
+        * @param  : {*} oEvent
+        * @version: 1.0
+        * @History: La primera versión fue escrita por Alex Alto Feb - 2025
+        */
+        _validDNI: function (oEvent) {
+            let sDNI = oEvent.getParameter("value");
+            if (this.validateDNISpain(sDNI) && sDNI != '') {
+                this.oTypeEmployeeM.setProperty("/SATEDNI", "Success");
+                this.oTypeEmployeeM.setProperty("/EMPLOYEEDNI", sDNI);
+            }
+            else {
+                this.oTypeEmployeeM.setProperty("/SATEDNI", "Error");
+            }
+            this.oTypeEmployeeM.refresh();
+            this.validationForm();
+        },
+        /**
+        * FUNCIÓN QUE VALIDA EL CAMPO CIF
+        * EJEMPLO: 01234567L
+        * @author : Alex Alto
+        * @param  : {*} oEvent
+        * @version: 1.0
+        * @History: La primera versión fue escrita por Alex Alto Feb - 2025
+        */
+        _validCIF: function (oEvent) {
+            let sCIF = oEvent.getParameter("value");
+            if (sCIF != '') {
+                this.oTypeEmployeeM.setProperty("/SATECIF", "Success");
+                this.oTypeEmployeeM.setProperty("/EMPLOYEECIF", sCIF);
+            }
+            else {
+                this.oTypeEmployeeM.setProperty("/SATECIF", "Error");
+            }
+            this.oTypeEmployeeM.refresh();
+            this.validationForm();
+        },
+        /**
+        * FUNCIÓN QUE VALIDA EL CAMPO Fecha Incorporación DONDE LA FECHA SEA VALIDA
+        * @author : Alex Alto
+        * @param  : {*} oEvent
+        * @version: 1.0
+        * @History: La primera versión fue escrita por Alex Alto Feb - 2025
+        */
+        _validDate: function (oEvent) {
+            let sDate = oEvent.getParameter("value");
             try {
-                if (sdate) {
-                    if(oEvent.getSource().isValidValue()){
-                        oTypeEmployeeM.setProperty("/SATEDATE", "None");
-                        oTypeEmployeeM.setProperty("/EMPLOYEEDATE", sdate);
-                        oTypeEmployeeM.setProperty("/EMPLOYEEDATEVALUE", oEvent.getSource().mProperties.dateValue);
-                        sdate = true;
-                    }else{
-                        oTypeEmployeeM.setProperty("/SATEDATE", "Error");
-                        sdate = false;
-                    }
-                } else {
-                    oTypeEmployeeM.setProperty("/SATEDATE", "Error");
-                    sdate = false;
+                if (oEvent.getSource().isValidValue() && sDate != '') {
+                    this.oTypeEmployeeM.setProperty("/SATEDATE", "Success");
+                    this.oTypeEmployeeM.setProperty("/EMPLOYEEDATE", sdate);
+                    this.oTypeEmployeeM.setProperty("/EMPLOYEEDATEVALUE", oEvent.getSource().mProperties.dateValue);
                 }
-            } catch (error) {
-              
-            }
-            
-           
-           //Si los campos estan completos, habilita el paso 3
-            if (sname && slastname && (scif || sdni) && sdate) {
+                else {
+                    this.oTypeEmployeeM.setProperty("/SATEDATE", "Error");
+                }
+                this.oTypeEmployeeM.refresh();
+            } catch (error) { }
+            this.validationForm();
+        },
+        /**
+        *FUNCIÓN QUE VALIDA SI ESTA COMPLETO EL FOMRULARIO DE MANERA CORRECTA PARA HABILITAR
+        * EL PASO 3
+        * @author : Alex Alto
+        * @version: 2.0
+        * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
+        */
+       validationForm: function () {
+            let vsName      = this.oTypeEmployeeM.getProperty("/SATENAME");
+            let vsLastName  = this.oTypeEmployeeM.getProperty("/SATELASTNAME");
+            let vsCIF       = this.oTypeEmployeeM.getProperty("/SATECIF");
+            let vsDNI       = this.oTypeEmployeeM.getProperty("/SATEDNI");
+            let vsDate      = this.oTypeEmployeeM.getProperty("/SATEDATE");
+           //Se valida la bandera isValidForm y muestra el botón
+           if ((vsName === "Success") && (vsLastName === "Success") && ((vsCIF || vsDNI)=== "Success") && (vsDate=== "Success")) {
                 this._wizard.validateStep(this.byId("employeesData"));
             } else {
                 //De lo contrario no muesta el botón
                 this._wizard.invalidateStep(this.byId("employeesData"));
             }
-            //Refresca el modelo
-            oTypeEmployeeM.refresh();
         },
-
-        validateDNISpain : function (dni) {
-            var number;
-            var letter;
-            var letterList;
-            var regularExp = /^\d{8}[a-zA-Z]$/;
-            //Se comprueba que el formato es válido
-            if (regularExp.test(dni) === true) {
-                //Número
-                number = dni.substr(0, dni.length - 1);
-                //Letra
-                letter = dni.substr(dni.length - 1, 1);
-                number = number % 23;
-                letterList = "TRWAGMYFPDXBNJZSQVHLCKET";
-                letterList = letterList.substring(number, number + 1);
-                if (letterList !== letter.toUpperCase()) {
-                    return false;
-                } else {
-                    return true;//Correcto
-                }
-            } else {
-                return false;//Error
-            }
-        },
-
-        
-        /**
-         * Función que al terminar de llenar los formularios
-         * envia una nueva vista para revisar los datos ingresados
+         /**
+         * FUNCIÓN QUE AL TERMINAR DE LLENAR LOS FORMULARIOS
+         * ENVIA UNA NUEVA VISTA PARA REVISAR LOS DATOS INGRESADOS
+         * @author : Alex Alto
+         * @version: 2.0
+         * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
          */
         wizardCompletedHandler: function () {
             this._oNavContainer.to(this.byId("wizardReviewPage"));
@@ -232,48 +245,61 @@ sap.ui.define([
 				var uploadCollection = this.byId("uploadCollection");
 				var files = uploadCollection.getItems();
 				var numFiles = uploadCollection.getItems().length;
-                let oTypeEmployeeM = this.getView().getModel("objTypeEmployee");
-				oTypeEmployeeM.setProperty("/_numFiles",numFiles);
+				this.oTypeEmployeeM.setProperty("/_numFiles",numFiles);
 				if (numFiles > 0) {
 					var arrayFiles = [];
 					for(var i in files){
 						arrayFiles.push({DocName:files[i].getFileName(),MimeType:files[i].getMimeType()});	
 					}
-					oTypeEmployeeM.setProperty("/_files",arrayFiles);
+					this.oTypeEmployeeM.setProperty("/_files",arrayFiles);
 				}else{
-					oTypeEmployeeM.setProperty("/_files",[]);
+					this.oTypeEmployeeM.setProperty("/_files",[]);
 				}
                //Refresca el modelo
-            oTypeEmployeeM.refresh(); 
+            this.oTypeEmployeeM.refresh(); 
         },
         /**
-         * Función que regresa al Wizard
-         */
+        * FUNCIÓN QUE REGRESA AL WIZARD
+        * @author : Alex Alto
+        * @version: 2.0
+        * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
+        */
         backToWizardContent: function () {
-			this._oNavContainer.backToPage(this._oWizardContentPage.getId());
-		},
+            this._oNavContainer.backToPage(this._oWizardContentPage.getId());
+        },
         /**
-         * Función que regresa al paso uno para editar la infomración
-         */
+        * FUNCIÓN QUE REGRESA AL PASO UNO PARA EDITAR LA INFOMRACIÓN
+        * @author : Alex Alto
+        * @version: 2.0
+        * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
+        */
         editStepOne: function () {
 			this._handleNavigationToStep(0);
 		},
         /**
-         * Función que regresa al paso dos para editar la infomración
-         */
+        * FUNCIÓN QUE REGRESA AL PASO DOS PARA EDITAR LA INFOMRACIÓN
+        * @author : Alex Alto
+        * @version: 2.0
+        * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
+        */
 		editStepTwo: function () {
 			this._handleNavigationToStep(1);
 		},
         /**
-         * Función que regresa al paso tres para editar la infomración
-         */
+        * FUNCIÓN QUE REGRESA AL TRES UNO PARA EDITAR LA INFOMRACIÓN
+        * @author : Alex Alto
+        * @version: 2.0
+        * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
+        */
 		editStepThree: function () {
 			this._handleNavigationToStep(2);
 		},
         /**
-         * Función que regresa al wizard en el paso indicado
-         * @param {*} iStepNumber 
-         */
+        * FUNCIÓN QUE REGRESA AL WIZARD EN EL PASO INDICADO
+        * @author : Alex Alto
+        * @version: 1.0
+        * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
+        */
         _handleNavigationToStep: function (iStepNumber) {
 			var fnAfterNavigate = function () {
 				this._wizard.goToStep(this._wizard.getSteps()[iStepNumber]);
@@ -286,43 +312,42 @@ sap.ui.define([
 
         _CreateEmployee : function (oEvent){
             //Obtenemos los datos del modelo
-            let oTypeEmployeeM = this.getView().getModel("objTypeEmployee");
             let sTypeEmployee;
             let sDNICIF;
-            if(oTypeEmployeeM.getProperty("/EMPLOYEINTER")){
+            if(this.oTypeEmployeeM.getProperty("/EMPLOYEINTER")){
                 sTypeEmployee = "0";
-                sDNICIF = oTypeEmployeeM.getProperty("/EMPLOYEEDNI");
-            }else if(oTypeEmployeeM.getProperty("/EMPLOYEAUT")){
+                sDNICIF = this.oTypeEmployeeM.getProperty("/EMPLOYEEDNI");
+            }else if(this.oTypeEmployeeM.getProperty("/EMPLOYEAUT")){
                 sTypeEmployee = "1";
-                sDNICIF = oTypeEmployeeM.getProperty("/EMPLOYEECIF");
-            }else if(oTypeEmployeeM.getProperty("/EMPLOYEGER")){
+                sDNICIF = this.oTypeEmployeeM.getProperty("/EMPLOYEECIF");
+            }else if(this.oTypeEmployeeM.getProperty("/EMPLOYEGER")){
                 sTypeEmployee = "2";
-                sDNICIF = oTypeEmployeeM.getProperty("/EMPLOYEEDNI");
+                sDNICIF = this.oTypeEmployeeM.getProperty("/EMPLOYEEDNI");
             }
 
             var body = {
                 Type        : sTypeEmployee,
                 SapId       : "alex.alto.espiri@gmail.com",
-                FirstName   : oTypeEmployeeM.getProperty("/EMPLOYEENAME"),
-                LastName    : oTypeEmployeeM.getProperty("/EMPLOYEELASTNAME"),
+                FirstName   : this.oTypeEmployeeM.getProperty("/EMPLOYEENAME"),
+                LastName    : this.oTypeEmployeeM.getProperty("/EMPLOYEELASTNAME"),
                 Dni         : sDNICIF,
-                CreationDate: oTypeEmployeeM.getProperty("/EMPLOYEEDATEVALUE"), 
-                Comments    : oTypeEmployeeM.getProperty("/EMPLOYEECOMMENT")
+                CreationDate: this.oTypeEmployeeM.getProperty("/EMPLOYEEDATEVALUE"), 
+                Comments    : this.oTypeEmployeeM.getProperty("/EMPLOYEECOMMENT")
             };
 
             body.UserToSalary = [{
-                Amount  : parseFloat(oTypeEmployeeM.getProperty("/SLIDERVALUE")).toString(),
-                Comments: oTypeEmployeeM.getProperty("/EMPLOYEECOMMENT"),
+                Amount  : parseFloat(this.oTypeEmployeeM.getProperty("/SLIDERVALUE")).toString(),
+                Comments: this.oTypeEmployeeM.getProperty("/EMPLOYEECOMMENT"),
                 Waers   : "EUR"
             }];
 
             this.getView().getModel("employeeModel").create("/Users", body, {
                 success: function (oData) {
-                    oTypeEmployeeM.setProperty("/IDNEWUSER", oData.EmployeeId)
+                    this.oTypeEmployeeM.setProperty("/IDNEWUSER", oData.EmployeeId)
                     sap.m.MessageBox.information(this.oView.getModel("i18n").getResourceBundle().getText("newEmployeeMSG",oData.EmployeeId),{
                     
                     onClose : function(){
-                            //this.saveOK();
+                            this.saveOK();
                             this.onStartUpload();
                         }.bind(this)
                     });
@@ -349,11 +374,10 @@ sap.ui.define([
         },
 
         onFileBeforeUpload : function (oEvent){
-            let oTypeEmployeeM = this.getView().getModel("objTypeEmployee");
             let fileName = oEvent.getParameter("fileName");
             let oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
               name : "slug",
-              value : this.getOwnerComponent().SapId+";"+oTypeEmployeeM.getProperty("/IDNEWUSER")+";"+fileName
+              value : this.getOwnerComponent().SapId+";"+this.oTypeEmployeeM.getProperty("/IDNEWUSER")+";"+fileName
             });
             oEvent.getParameters().addHeaderParameter(oCustomerHeaderSlug);
         },

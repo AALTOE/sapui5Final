@@ -28,8 +28,7 @@
             />
             <Input
                 id="iname"
-                type="Text"
-                liveChange="validationForm"
+                liveChange="_validName"
                 placeholder="{i18n>placeHolderName}"
                 valueState="{objTypeEmployee>/SATENAME}"
                 valueStateText="{i18n>valueStateName}"
@@ -41,8 +40,7 @@
             />
             <Input
                 id="ilastname"
-                type="Text"
-                liveChange="validationForm"
+                liveChange="_validLastName"
                 placeholder="{i18n>placeHolderLasteName}"
                 valueState="{objTypeEmployee>/SATELASTNAME}"
                 valueStateText="{i18n>valueStateLastName}"
@@ -55,7 +53,7 @@
             />
             <Input
                 id="icif"
-                liveChange="validationForm"
+                liveChange="_validCIF"
                 placeholder="{i18n>placeholderCIF}"
                 visible="{objTypeEmployee>/INPUTCFI}"
                 valueState="{objTypeEmployee>/SATECIF}"
@@ -69,7 +67,7 @@
             />
             <Input
                 id="idni"
-                liveChange="validationForm"
+                liveChange="_validDNI"
                 placeholder="{i18n>placeholderDNI}"
                 visible="{objTypeEmployee>/INPUTDNI}"
                 valueState="{objTypeEmployee>/SATEDNI}"
@@ -114,7 +112,7 @@
             />
             <DatePicker
                 id="idate"
-                change="validationForm"
+                change="_validDate"
                 placeholder="{i18n>placerholderDate}"
                 valueState="{objTypeEmployee>/SATEDATE}"
                 valueStateText="{i18n>valueStateDate}"
