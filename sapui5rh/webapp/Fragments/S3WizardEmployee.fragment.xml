@@ -32,7 +32,7 @@
             uploadUrl="/sap/opu/odata/sap/ZEMPLOYEES_SRV/Attachments"
             change="onFileChange"
             beforeUploadStarts="onFileBeforeUpload"
-            noDataDescription="arrastrarficheros"
+            noDataDescription="{i18n>labelfiles}"
         />
     </WizardStep>
 </core:FragmentDefinition>

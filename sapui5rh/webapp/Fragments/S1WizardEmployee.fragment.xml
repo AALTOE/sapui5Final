@@ -3,7 +3,7 @@
     xmlns:core="sap.ui.core"
 >
     <WizardStep
-        id="ProductTypeStep"
+        id="employeeTypeStep"
         title="{i18n>typeEmployee}"
         validated="true"
     >

@@ -13,6 +13,13 @@ sap.ui.define([
 
     return Base.extend("com.logali.sapui5rh.controller.CreateEmployee", {
 
+        onBeforeRendering: function () {
+            //Iniciamos el modelo 
+            this._employeeTypeModel();
+            //Variable global del modelo
+            this.oTypeEmployeeM = this.getView().getModel("objTypeEmployee");
+        },
+
         onInit() {
             //Variable global para el objeto del NavContainer por id
             this._oNavContainer = this.byId("wizardNavContainer");
@@ -20,10 +27,7 @@ sap.ui.define([
             this._wizard = this.byId("createEmployeeWizard");
             //Variable global para obtener la página donde se encuentra el Wizard
             this._oWizardContentPage = this.byId("wizardContentPage");
-            //Iniciamos el modelo 
-            this._employeeTypeModel();
-            //Variable global del modelo
-            this.oTypeEmployeeM = this.getView().getModel("objTypeEmployee");
+            this.disableBtnStep();
         },
 
         /**
@@ -34,22 +38,8 @@ sap.ui.define([
         * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
         */
        _employeeTypeModel: function(){
-           //Modelo para el formulario por default
            var oViewModel;
-           oViewModel = new JSONModel({
-               EMPLOYEINTER	: true,
-               EMPLOYEAUT	: "",
-               EMPLOYEGER	: "",
-               INPUTDNI     : true,
-               INPUTCFI     : false,
-               INPUTPRICE   : false,
-               INPUTSALARY  : true,
-               SLIDERMIN    : 12000,
-               SLIDERMAX    : 80000,
-               SLIDERSTEP   : 1000,
-               SLIDERVALUE  : 24000,
-               EMPLOYEETEXT : "Interno"
-           });
+           oViewModel = new JSONModel({});
            this.getView().setModel(oViewModel, "objTypeEmployee");
        },
         /**
@@ -95,9 +85,24 @@ sap.ui.define([
                     this.oTypeEmployeeM.setProperty("/SLIDERVALUE", 70000);
                 }else{
                     //Establece la configuración para el empleado Interno
-                    this._employeeTypeModel();
-                    this.validationForm();
+                    this.oTypeEmployeeM.setProperty("/EMPLOYEINTER", true);
+                    this.oTypeEmployeeM.setProperty("/EMPLOYEAUT", false);
+                    this.oTypeEmployeeM.setProperty("/EMPLOYEGER", false);
+                    this.oTypeEmployeeM.setProperty("/INPUTDNI", true);
+                    this.oTypeEmployeeM.setProperty("/INPUTCFI", false);
+                    this.oTypeEmployeeM.setProperty("/INPUTPRICE", false);
+                    this.oTypeEmployeeM.setProperty("/INPUTSALARY", true);
+                    this.oTypeEmployeeM.setProperty("/SLIDERMIN", 12000);
+                    this.oTypeEmployeeM.setProperty("/SLIDERMAX", 80000);
+                    this.oTypeEmployeeM.setProperty("/SLIDERSTEP", 1000);
+                    this.oTypeEmployeeM.setProperty("/SLIDERVALUE", 24000);
                 }
+            //Avanzamos al paso dos | Si editamos el paso uno, se mantiene y no se avanza
+		    if(this._wizard.getCurrentStep() === this.byId("employeeTypeStep").getId()){
+			    this._wizard.nextStep();
+            }
+            //Validamos el formulario para no mostar el botón paso 3
+            this.validationForm();
             //Refresca el modelo
             this.oTypeEmployeeM.refresh();
        },
@@ -109,7 +114,7 @@ sap.ui.define([
         */
        cancelProgress : function () {
         let oResourceBundle   = this.getView().getModel("i18n").getResourceBundle();
-        this.showMessageBoxReturn(oResourceBundle.getText("cancelMSG"), "warning");
+        this.showMessageBoxType("warning", oResourceBundle.getText("cancelTitle"), oResourceBundle.getText("cancelMSG"), 0);
        },
        /**
         * FUNCIÓN QUE VALIDA EL CAMPO NOMBRE CON SOLO LETRAS
@@ -201,7 +206,7 @@ sap.ui.define([
             try {
                 if (oEvent.getSource().isValidValue() && sDate != '') {
                     this.oTypeEmployeeM.setProperty("/SATEDATE", "Success");
-                    this.oTypeEmployeeM.setProperty("/EMPLOYEEDATE", sdate);
+                    this.oTypeEmployeeM.setProperty("/EMPLOYEEDATE", sDate);
                     this.oTypeEmployeeM.setProperty("/EMPLOYEEDATEVALUE", oEvent.getSource().mProperties.dateValue);
                 }
                 else {
@@ -225,38 +230,56 @@ sap.ui.define([
             let vsDNI       = this.oTypeEmployeeM.getProperty("/SATEDNI");
             let vsDate      = this.oTypeEmployeeM.getProperty("/SATEDATE");
            //Se valida la bandera isValidForm y muestra el botón
-           if ((vsName === "Success") && (vsLastName === "Success") && ((vsCIF || vsDNI)=== "Success") && (vsDate=== "Success")) {
+           if ((vsName === "Success") && (vsLastName === "Success") && ((vsCIF === "Success" || vsDNI === "Success")) && (vsDate=== "Success")) {
                 this._wizard.validateStep(this.byId("employeesData"));
             } else {
                 //De lo contrario no muesta el botón
                 this._wizard.invalidateStep(this.byId("employeesData"));
             }
         },
+        /**
+        * FUNCIÓN QUE VALIDA SI AGREGARON ARCHIVOS Y GENERA UN ARREGLO EN EL MODELO
+        * CON LA LISTA DE ARCHIVOS SELECCIONADOS
+        * EL PASO 3
+        * @author : Alex Alto
+        * @version: 2.0
+        * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
+        */
+        setFilesModel : function () {
+            //Obtiene el objeto del ID uploadCollection
+            var oUploadCollection = this.byId("uploadCollection");
+            //Obtiene los items
+            var ofiles = oUploadCollection.getItems();
+            //Obtiene la cantidad de archivos
+            var onumFiles = oUploadCollection.getItems().length;
+            //SETEA EL NUMERO DE ARCHIVOS AL MODELO
+            this.oTypeEmployeeM.setProperty("/NUMFILES", onumFiles);
+            //SI SE CARGO UN ARCHIVO
+            if (onumFiles > 0) {
+                var arrayFiles = [];
+                for (var i in ofiles) {
+                    //LOS INGRESA E UN ARRREGLO CON SU NOMBRE Y TIPO DE MEDIO
+                    arrayFiles.push({ FileName: ofiles[i].getFileName(), MimeType: ofiles[i].getMimeType() });
+                }
+                //SETEA EL ARREGLO DE ARCHIVOS AL MODELO
+                this.oTypeEmployeeM.setProperty("/FILES", arrayFiles);
+            } else {
+                //SETEA EL ARREGLO VACIO DE ARCHIVOS AL MODELO CUANDO NO SE SELEECIONE NINGUNO
+                this.oTypeEmployeeM.setProperty("/FILES", []);
+            }
+            //Refresca el modelo
+            this.oTypeEmployeeM.refresh(); 
+        },
          /**
          * FUNCIÓN QUE AL TERMINAR DE LLENAR LOS FORMULARIOS
          * ENVIA UNA NUEVA VISTA PARA REVISAR LOS DATOS INGRESADOS
          * @author : Alex Alto
          * @version: 2.0
-         * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
+         * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
          */
         wizardCompletedHandler: function () {
+            this.setFilesModel();
             this._oNavContainer.to(this.byId("wizardReviewPage"));
-            //Se obtiene los archivos subidos
-				var uploadCollection = this.byId("uploadCollection");
-				var files = uploadCollection.getItems();
-				var numFiles = uploadCollection.getItems().length;
-				this.oTypeEmployeeM.setProperty("/_numFiles",numFiles);
-				if (numFiles > 0) {
-					var arrayFiles = [];
-					for(var i in files){
-						arrayFiles.push({DocName:files[i].getFileName(),MimeType:files[i].getMimeType()});	
-					}
-					this.oTypeEmployeeM.setProperty("/_files",arrayFiles);
-				}else{
-					this.oTypeEmployeeM.setProperty("/_files",[]);
-				}
-               //Refresca el modelo
-            this.oTypeEmployeeM.refresh(); 
         },
         /**
         * FUNCIÓN QUE REGRESA AL WIZARD
@@ -309,9 +332,54 @@ sap.ui.define([
 			this._oNavContainer.attachAfterNavigate(fnAfterNavigate);
 			this.backToWizardContent();
 		},
-
-        _CreateEmployee : function (oEvent){
-            //Obtenemos los datos del modelo
+        /**
+        * FUNCIÓN QUE GENERA EL TOKEN AL SELECCIONAR UN ARCHIVO Y
+        * LOS GUARDA EN CABECERA
+        * @author : Alex Alto
+        * @version: 1.0
+        * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
+        */
+        onFileChange : function (oEvent) {
+            let oUploadCollection = oEvent.getSource();
+            let oCustomerHeaderToken = new sap.m.UploadCollectionParameter({
+              name: "x-csrf-token",
+              value: this.getView().getModel("employeeModel").getSecurityToken()
+            });
+            oUploadCollection.addHeaderParameter(oCustomerHeaderToken);
+        },
+        /**
+        * FUNCIÓN QUE INCIA LA CARGA DE ARCHIVOS EN EL SERVIDOR
+        * @author : Alex Alto
+        * @version: 1.0
+        * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
+        */
+         onStartUpload : function () {
+            var that = this;
+            var oUploadCollection = that.byId("uploadCollection");
+            oUploadCollection.upload();
+        },
+        /**
+        * FUNCIÓN QUE ENVIA EL SLUG JUNTO CON LA INFOMRACIÓN DE LOS ARCHIVOS
+        * @author : Alex Alto
+        * @version: 1.0
+        * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
+        */
+        onFileBeforeUpload : function (oEvent){
+            let fileName = oEvent.getParameter("fileName");
+            let oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
+              name : "slug",
+              value : this.getOwnerComponent().SapId+";"+this.oTypeEmployeeM.getProperty("/IDNEWUSER")+";"+fileName
+            });
+            oEvent.getParameters().addHeaderParameter(oCustomerHeaderSlug);
+        },
+        /**
+        * FUNCIÓN QUE PREPARA TODOS LOS DATOS NECESARIOS PARA LA CREACIÓN DEL USUARIO
+        * @author : Alex Alto
+        * @version: 1.0
+        * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
+        */
+        _CreateEmployee : function (){
+            //Validamos que tipo de empleado se va a crear
             let sTypeEmployee;
             let sDNICIF;
             if(this.oTypeEmployeeM.getProperty("/EMPLOYEINTER")){
@@ -324,64 +392,27 @@ sap.ui.define([
                 sTypeEmployee = "2";
                 sDNICIF = this.oTypeEmployeeM.getProperty("/EMPLOYEEDNI");
             }
-
-            var body = {
+            //Generamos el objeto con los datos correspondientes
+            let body = {
                 Type        : sTypeEmployee,
-                SapId       : "alex.alto.espiri@gmail.com",
+                SapId       : this.getOwnerComponent().SapId,
                 FirstName   : this.oTypeEmployeeM.getProperty("/EMPLOYEENAME"),
                 LastName    : this.oTypeEmployeeM.getProperty("/EMPLOYEELASTNAME"),
                 Dni         : sDNICIF,
                 CreationDate: this.oTypeEmployeeM.getProperty("/EMPLOYEEDATEVALUE"), 
                 Comments    : this.oTypeEmployeeM.getProperty("/EMPLOYEECOMMENT")
             };
-
+            //Agregamos una nueva propiedad
             body.UserToSalary = [{
                 Amount  : parseFloat(this.oTypeEmployeeM.getProperty("/SLIDERVALUE")).toString(),
                 Comments: this.oTypeEmployeeM.getProperty("/EMPLOYEECOMMENT"),
                 Waers   : "EUR"
             }];
-
-            this.getView().getModel("employeeModel").create("/Users", body, {
-                success: function (oData) {
-                    this.oTypeEmployeeM.setProperty("/IDNEWUSER", oData.EmployeeId)
-                    sap.m.MessageBox.information(this.oView.getModel("i18n").getResourceBundle().getText("newEmployeeMSG",oData.EmployeeId),{
-                    
-                    onClose : function(){
-                            this.saveOK();
-                            this.onStartUpload();
-                        }.bind(this)
-                    });
-
-                }.bind(this),
-                error: function () {
-                    sap.m.MessageToast.show("ERROR");
-                }.bind(this)
-            })
-        },
-        onFileChange : function (oEvent) {
-            let oUploadCollection = oEvent.getSource();
-            let oCustomerHeaderToken = new sap.m.UploadCollectionParameter({
-              name: "x-csrf-token",
-              value: this.getView().getModel("employeeModel").getSecurityToken()
-            });
-            oUploadCollection.addHeaderParameter(oCustomerHeaderToken);
-        },
-  
-         onStartUpload : function () {
-            var that = this;
-            var oUploadCollection = that.byId("uploadCollection");
-            oUploadCollection.upload();
-        },
-
-        onFileBeforeUpload : function (oEvent){
-            let fileName = oEvent.getParameter("fileName");
-            let oCustomerHeaderSlug = new sap.m.UploadCollectionParameter({
-              name : "slug",
-              value : this.getOwnerComponent().SapId+";"+this.oTypeEmployeeM.getProperty("/IDNEWUSER")+";"+fileName
-            });
-            oEvent.getParameters().addHeaderParameter(oCustomerHeaderSlug);
-        },
-
-
+            //Guardamos el mensaje de confimración
+            let msgCreateEmployee   = this.oView.getModel("i18n").getResourceBundle().getText("confirmNewEmployee", 
+                                    this.oTypeEmployeeM.getProperty("/EMPLOYEENAME"));
+            //Ejecutamos un mensaje de confirmación
+            this.showMessageCRUD("create", msgCreateEmployee, "warning", "/Users", body);
+        }
     });
 });

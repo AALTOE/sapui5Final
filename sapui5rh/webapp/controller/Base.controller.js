@@ -15,15 +15,15 @@ sap.ui.define(
         */
         return BaseController.extend("com.logali.sapui5rh.controller.Base", {
 
-            onInit: function () {
-
-            },
+            onInit: function () {},
             /**
-             * Función que regresa a una pagina anterior o 
-             * a la pagina principal desde cualquier punto
-             * @param {*} oEvent 
+            * FUNCIÓN QUE REGRESA A UNA PÁGINA ATRAS O A LA PAGINA PRIUNCIPAL
+            * DESDE CUALQUIER PUNTO DE LA APP
+            * @author : Alex Alto
+            * @version: 1.0
+            * @History:  La primera versión fue escrita por Alex Alto Ene - 2025 
             */
-            onBack: function (oEvent) {
+            onBack: function () {
                 var oHistory = History.getInstance();
                 var sPreviousHash = oHistory.getPreviousHash();
 
@@ -31,15 +31,31 @@ sap.ui.define(
                     //Regresamos a la vista anterior
                     window.history.go(-1);
                 } else {
-                    //Aqui llega directamente a la vista de los detalles
                     var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-                    oRouter.navTo("RouteView1", true);
+                    oRouter.navTo("RouteView1", {},true);
                 }
+                if(this.getView().sViewName.substr(25) === "CreateEmployee"){
+                    //Limpia los valores de los inputs
+                    this.cleanInputsValue();
+                }
+            },
+            /**
+            * FUNCIÓN QUE OCULTA EL BOTON DE NETSTAPE EN EL PRIMER PASO
+            * @author : Alex Alto
+            * @version: 1.0
+            * @History:  La primera versión fue escrita por Alex Alto Ene - 2025 
+            */
+            disableBtnStep: function () {
+                //Ocultamos el boton en el primer paso
+                const oFirstStep = this._wizard.getSteps()[0];
+                this._wizard.discardProgress(oFirstStep);
+                this._wizard.goToStep(oFirstStep);
+                oFirstStep.setValidated(false);
             },
             /**
             * FUNCIÓN QUE VALIDA CON UNA EXPRESION REGULAR, QUE EL VALOR CONTEGA SOLO LETRAS
             * @author : Alex Alto
-            * @param  : {*} oEvent
+            * @param  : sValue Valor del texto ingresado
             * @version: 1.0
             * @returns: true | false
             * @History: La primera versión fue escrita por Alex Alto Feb - 2025
@@ -53,7 +69,14 @@ sap.ui.define(
                     return false;
                 }
             },
-
+            /**
+            * FUNCIÓN QUE VALIDA LA NOMENCLATURA DEL DNI ESPAÑOL
+            * @author : Alex Alto
+            * @param  : dni Valor del texto ingresado
+            * @version: 1.0
+            * @returns: true | false
+            * @History: La primera versión fue escrita por Alex Alto Feb - 2025
+            */
             validateDNISpain : function (dni) {
                 var number;
                 var letter;
@@ -77,66 +100,76 @@ sap.ui.define(
                     return false;//Error
                 }
             },
-
-            
-
-            /* FUNCIÓN QUE CANCELA EL PROGRESO DEL WIZARD Y REGRESA AL PASO 1
-            * 
+            /** 
+            *FUNCIÓN QUE MUESTRA UN MessageBox, SEGUN SU TIPO
             * @author :  Alex Alto
-            * @version:  1.0
+            * @params :  sMessageBoxType = Info, Warning, Error, etc.
+            *            sTitle = Titulo del mensaje
+            *            sMessage =  Mensaje 
+            *            iTypeAction = Tipo de Acción
+            *            0 = Cancelar
+            *            1 = Guadar Empleado
+            *            2 = Eliminar empleado 
+            * @version:  2.0
             * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
-            */            
-            showMessageBoxCancel: function (sMessage, sMessageBoxType) {
+            */
+            showMessageBoxType: function (sMessageBoxType, sTitle, sMessage, iTypeAction) {
                 MessageBox[sMessageBoxType](sMessage, {
+                    title: sTitle,
                     actions: [MessageBox.Action.YES, MessageBox.Action.NO],
                     onClose: function (oAction) {
                         if (oAction === MessageBox.Action.YES) {
-                            this._handleNavigationToStep(0);
-                            this._employeeTypeModel();
-                            this._wizard.discardProgress(this._wizard.getSteps()[0]);
+                            if (iTypeAction === 0){
+                                this.saveOKResetModel();
+                            }
                         }
                     }.bind(this)
                 });
+
             },
-            /* FUNCIÓN QUE CANCELA EL PROGRESO DEL WIZARD Y REGRESA AL MENU PRINCIPAL
-            * 
+            /**
+            * FUNCIÓN REINICIA LA APP DESDE 0 AL TERMINAR DE GUARDAR UN EMPLEADO
             * @author :  Alex Alto
             * @version:  1.0
             * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
             */
-            showMessageBoxReturn: function (sMessage, sMessageBoxType) {
-                MessageBox[sMessageBoxType](sMessage, {
-                    actions: [MessageBox.Action.YES, MessageBox.Action.NO],
-                    onClose: function (oAction) {
-                        if (oAction === MessageBox.Action.YES) {
-                            this._handleNavigationToStep(0);
-                            this._employeeTypeModel();
-                            this._wizard.discardProgress(this._wizard.getSteps()[0]);
-                            this.onBack();
-                        }
-                    }.bind(this)
-                });
-            },
-            /* FUNCIÓN REINICIA LA APP DESDE 0 AL TERMINAR DE GUARDAR UN EMPLEADO
-            * 
-            * @author :  Alex Alto
-            * @version:  1.0
-            * @History:  La primera versión fue escrita por Alex Alto Ene - 2025
-            */
-            saveOK : function (){
+            saveOKResetModel : function (){
                 //Regresa al paso 1
                 this._handleNavigationToStep(0);
-                //Reinicia el modelo
-                this._employeeTypeModel();
                 //Descarta todo el progreso
                 this._wizard.discardProgress(this._wizard.getSteps()[0]);
                 //Regresa el menú principal
                 this.onBack();
             },
-
-            /* FUNCIÓN QUE MUESTRA UN MENSAJE DE CONFIRMACIÓN PARA ELIMINAR UN EMPLEADO
-            * 
+            /**
+            * FUNCIÓN LIMPIA TODOS LOS INPUTS DEL FORMULARIO
             * @author :  Alex Alto
+            * @version:  1.0
+            * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
+            */
+            cleanInputsValue : function () {
+                this.byId("iname").setValue("");
+                this.byId("ilastname").setValue("");
+                this.byId("icif").setValue("");
+                this.byId("idni").setValue("");
+                this.byId("idate").setValue("");
+                this.byId("iname").setValueState("None");
+                this.byId("ilastname").setValueState("None");
+                this.byId("icif").setValueState("None");
+                this.byId("idni").setValueState("None");
+                this.byId("idate").setValueState("None");
+                this.byId("uploadCollection").removeAllItems();
+                this.oTypeEmployeeM.setProperty("/EMPLOYEECOMMENT","");
+                this.oTypeEmployeeM.setProperty("/NUMFILES","");
+                this.oTypeEmployeeM.setProperty("/FILES","");
+                this.oTypeEmployeeM.setProperty("/BTNSTEP1",false);
+                this.disableBtnStep();
+                
+            },
+            /** 
+            *FUNCIÓN QUE MUESTRA UN MENSAJE DE CONFIRMACIÓN PARA ELIMINAR UN EMPLEADO
+            * @author :  Alex Alto
+            * @params :  sMessage, sMessageBoxType, sPath
             * @version:  1.0
             * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
             */
@@ -154,18 +187,22 @@ sap.ui.define(
                     }.bind(this)
                 });
             },
-
-            showMessageCRUD: function async (action, sMessage, sMessageBoxType, sPath)  {
+            /** 
+            *FUNCIÓN QUE MUESTRA UN MENSAJE DE CONFIRMACIÓN PARA ELIMINAR UN EMPLEADO
+            * @author :  Alex Alto
+            * @params :  action, sMessage, sMessageBoxType, sPath
+            * @version:  1.0
+            * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
+            */
+            showMessageCRUD: function async (action, sMessage, sMessageBoxType, sPath, object)  {
                 const $this = this;
-            
                 return new Promise ((resolve, reject) =>{
                     MessageBox[sMessageBoxType](sMessage, {
                         actions: [MessageBox.Action.YES, MessageBox.Action.NO],
                         onClose: async function (oAction) {
                             if(oAction == MessageBox.Action.YES){
                                 switch (action) {
-                                    case 'create' : resolve(await $this.create(object)); break;
-                                    case 'update' : resolve(await $this.update(object));break;
+                                    case 'create' : resolve(await $this._oDataCreate(sPath, object)); break;
                                     case 'delete' : resolve(await $this._oDataDelete(sPath));break;
                                 }
                             }
@@ -173,14 +210,58 @@ sap.ui.define(
                     });
                 })        
             },
-
+            /** 
+            *FUNCIÓN QUE LLAMA AL MODELO ODATA Y REALIZA UN CREATE EN EL SERVIDOR
+            * @author :  Alex Alto
+            * @params :  sEntity, body
+            * @version:  1.0
+            * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
+            */
+            _oDataCreate : function (sEntity, body){
+                this.getView().getModel("employeeModel").create(sEntity, body, {
+                    success: function (oData) {
+                        if ("/Users"){
+                            this._showInfoCreateEmployee(oData);
+                        }
+                        
+                    }.bind(this),
+                    error: function () {
+                        sap.m.MessageToast.show(this.oView.getModel("i18n").getResourceBundle().getText("MSGError"));
+                    }.bind(this)
+                })
+            },
+            /** 
+            *FUNCIÓN QUE AL CREAR UN USUARIO, MUESTRA UN MENSAJE INFOMRATIVO, MOSTRANDO EL ID
+            * @author :  Alex Alto
+            * @params :  oData
+            * @version:  1.0
+            * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
+            */
+            _showInfoCreateEmployee : function(oData){
+                this.oTypeEmployeeM.setProperty("/IDNEWUSER", oData.EmployeeId)
+                sap.m.MessageBox.information(this.oView.getModel("i18n").getResourceBundle().getText("newEmployeeMSG", oData.EmployeeId), {
+                    onClose: function () {
+                        //Al crear el empleado, reinicia todo el modelo
+                        this.saveOKResetModel();
+                        //Se inicia con la carga de archivos
+                        this.onStartUpload();
+                    }.bind(this)
+                });
+            },
+            /** 
+            *FUNCIÓN QUE LLAMA AL MODELO ODATA Y REALIZA UN DELETE EN EL SERVIDOR
+            * @author :  Alex Alto
+            * @params :  sPath
+            * @version:  1.0
+            * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
+            */
             _oDataDelete : function (sPath) {
                 this.getView().getModel("employeeModel").remove(sPath, {
                     success: function () {
                         this.resetViewEmployee();
                     }.bind(this),
                     error: function () {
-                        sap.m.MessageToast.show("ERROR");
+                        sap.m.MessageToast.show(this.oView.getModel("i18n").getResourceBundle().getText("MSGError"));
                     }.bind(this)
                 })
             }
