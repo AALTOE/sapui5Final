@@ -3,7 +3,7 @@ sap.ui.define([
 ], (Controller) => {
     "use strict";
 
-    return Controller.extend("com.logali.sapui5rh.controller.View1", {
+    return Controller.extend("com.logali.sapui5rh.controller.menu", {
         
         onInit() {
         },

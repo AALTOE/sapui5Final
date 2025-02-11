@@ -97,10 +97,10 @@
             },
             "routes": [
                 {
-                    "name": "RouteView1",
+                    "name": "menu",
                     "pattern": ":?query:",
                     "target": [
-                        "TargetView1"
+                        "menu"
                     ]
                 },
                 {
@@ -119,9 +119,9 @@
                 }
             ],
             "targets": {
-                "TargetView1": {
-                    "id": "View1",
-                    "name": "View1",
+                "menu": {
+                    "id": "menu",
+                    "name": "menu",
                     "transition": "show"
                 },
                 "TargetCreateEmployee": {

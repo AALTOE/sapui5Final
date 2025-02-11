@@ -16,5 +16,8 @@
         "uaa.user"
       ]
     }
-  ]
+  ],
+  "oauth2-configuration": {
+    "redirect-uris": ["https://67ef397ctrial-67ef397ctrial-ext-dev-sapui5final-approuter.cfapps.us10-001.hana.ondemand.com/"]
+  }
 }
