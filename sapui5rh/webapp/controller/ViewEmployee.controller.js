@@ -109,8 +109,12 @@ sap.ui.define([
             var oList = this.getView().byId("listEmployees");
             oList.getBinding("items").refresh(true);
         },
-
-        showUpgrateEmployee : function (oEvent) {
+        /**
+         * FUNCIÓN QUE MUESTRA UN FRAGMENT QUE CONTIENE UN FORMULARIO PARA EL ASCENSO
+         * @version:  1.0
+         * @History:  La primera versión fue escrita por Alex Alto FEB - 2025
+         */
+        showUpgrateEmployee : function () {
             if (!this.oMPDialog) {
 				this.oMPDialog = this.loadFragment({
 					name: "com.logali.sapui5rh.Fragments.ViewEmployee.F5UpgrateEmployee"
@@ -120,12 +124,24 @@ sap.ui.define([
 				this.oDialog = oDialog;
 				this.oDialog.open();
 			}.bind(this));
-        },
-
+        }, 
+        /**
+         * FUNCIÓN QUE CIERRA EL DIALOGO DEL ASCENSO Y RESETEA EL
+         * FORMULARIO
+         * @version:  1.0
+         * @History:  La primera versión fue escrita por Alex Alto FEB - 2025
+         */
         _closeDialog: function () {
 			this.oDialog.close();
+            this.byId("inputAmount").setValue("");
+            this.byId("inputCreationDate").setValue("");
+            this.byId("inputComments").setValue("");
 		},
-
+        /**
+         * FUNCIÓN QUE VALIDA EL CAMPO DEL SALARIO
+         * @version:  1.0
+         * @History:  La primera versión fue escrita por Alex Alto FEB - 2025
+         */
         validSlary : function (oEvent) {
             const sValue = oEvent.getParameters().value;
             let context = oEvent.getSource();
@@ -142,7 +158,11 @@ sap.ui.define([
             oDataEmployee.refresh();
             this.enableSaveButton();
         },
-
+        /**
+         * FUNCIÓN QUE VALIDA EL CAMPO DEL FECHA
+         * @version:  1.0
+         * @History:  La primera versión fue escrita por Alex Alto FEB - 2025
+         */
         validDate : function (oEvent) {
             let context = oEvent.getSource();
             const oDataEmployee =this.getView().getModel("objEmployeeInfo");
@@ -159,47 +179,45 @@ sap.ui.define([
             oDataEmployee.refresh();
             this.enableSaveButton();
         },
-
+        /**
+         * FUNCIÓN QUE VALIDA SI EL CAMPO SALARIO Y FECHA SON CORRECTO, HABILITA EL BOTON DE GUARDAR
+         * @version:  1.0
+         * @History:  La primera versión fue escrita por Alex Alto FEB - 2025
+         */
         enableSaveButton : function (){
             const oDataEmployee =this.getView().getModel("objEmployeeInfo");
-            if(oDataEmployee.getProperty("/VALIDSALARY") && oDataEmployee.getProperty("/VALIDDATE")){
+            if( oDataEmployee.getProperty("/VALIDSALARY") && 
+                oDataEmployee.getProperty("/VALIDDATE")
+            ){
                 oDataEmployee.setProperty("/EnableSave", true);
             }else{
                 oDataEmployee.setProperty("/EnableSave", false);
             }
             oDataEmployee.refresh();
         },
-
-        upgrateEmployee : function (oEvent) {
+        /**
+         * FUNCIÓN QUE PREPARA LA INFOMRACIÓN PARA REALIZAR EL UPGRATE
+         * @version:  1.0
+         * @History:  La primera versión fue escrita por Alex Alto FEB - 2025
+         */
+        upgrateEmployee : function () {
             this.getView().setBusy(true);
             const oDataEmployee = this.getView().getModel("objEmployeeInfo");
             const sEmployeeID   = oDataEmployee.getProperty("/EMPLOYEEID");
             const sAmount       = this.byId("inputAmount").getValue();
             const dCreationDate = this.byId("inputCreationDate").mProperties.dateValue;
             const sComments     = this.byId("inputComments").getValue();
-
             var body = {
                 Amount      : sAmount,
                 CreationDate: dCreationDate,
                 Comments    : sComments,
-                SapId       : "alex.alto.espiri@gmail.com",
+                SapId       : this.getOwnerComponent().SapId,
                 EmployeeId  : sEmployeeID,
                 Waers       : "EUR"
             };
-            this.getView().getModel("employeeModel").create("/Salaries", body, {
-                success: function () {
-                    sap.m.MessageToast.show("good");
-                    this._closeDialog();
-                    //Refrescamos los datos de la lista
-                    const oList = this.getView().byId("idTimeline");
-                    oList.insertContent("employeeModel>Comments")
-                    this.getView().setBusy(false);
-                }.bind(this),
-                error: function () {
-                    this.getView().setBusy(false);
-                    sap.m.MessageToast.show("Error");
-                }.bind(this)
-            });
+            //Realizamos la creación directamente
+            this._oDataCreate("/Salaries", body);
+            
         },
 
         _oDataGetFiles : function (EmployeeID){
@@ -248,9 +266,7 @@ sap.ui.define([
               success : function (){
                 oUploadCollection.getBinding("items").refresh();
               },
-              error : function (){
-  
-              }
+              error : function (){}
             });
           },
   

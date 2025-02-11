@@ -169,27 +169,6 @@ sap.ui.define(
             /** 
             *FUNCIÓN QUE MUESTRA UN MENSAJE DE CONFIRMACIÓN PARA ELIMINAR UN EMPLEADO
             * @author :  Alex Alto
-            * @params :  sMessage, sMessageBoxType, sPath
-            * @version:  1.0
-            * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
-            */
-            showMessageDelete: function (sMessage, sMessageBoxType, sPath) {
-                const isValid = false;
-                MessageBox[sMessageBoxType](sMessage, {
-                    actions: [MessageBox.Action.YES, MessageBox.Action.NO],
-                    onClose: function (oAction) {
-                        if (oAction === MessageBox.Action.YES) {
-                            isValid = this._oDataDelete(sPath);
-                            return isValid;
-                        }else{
-                            return isValid;
-                        }
-                    }.bind(this)
-                });
-            },
-            /** 
-            *FUNCIÓN QUE MUESTRA UN MENSAJE DE CONFIRMACIÓN PARA ELIMINAR UN EMPLEADO
-            * @author :  Alex Alto
             * @params :  action, sMessage, sMessageBoxType, sPath
             * @version:  1.0
             * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
@@ -220,12 +199,16 @@ sap.ui.define(
             _oDataCreate : function (sEntity, body){
                 this.getView().getModel("employeeModel").create(sEntity, body, {
                     success: function (oData) {
-                        if ("/Users"){
+                        if (sEntity === "/Users"){
+                            this.getView().setBusy(false);
                             this._showInfoCreateEmployee(oData);
-                        }
+                        }else if(sEntity ==="/Salaries"){
+                            this._showInfoCreateUpgrate();
+                        }   
                         
                     }.bind(this),
                     error: function () {
+                        this.getView().setBusy(false);
                         sap.m.MessageToast.show(this.oView.getModel("i18n").getResourceBundle().getText("MSGError"));
                     }.bind(this)
                 })
@@ -264,10 +247,22 @@ sap.ui.define(
                         sap.m.MessageToast.show(this.oView.getModel("i18n").getResourceBundle().getText("MSGError"));
                     }.bind(this)
                 })
+            },
+            /** 
+            *FUNCIÓN QUE REALIZA UN ASCENSO DE UN EMPLEADO Y MUESTRA UN MENSAJE INFORMATIVO
+            * @author :  Alex Alto
+            * @params :  oData
+            * @version:  1.0
+            * @History:  La primera versión fue escrita por Alex Alto Feb - 2025
+            */
+            _showInfoCreateUpgrate : function(){
+                sap.m.MessageToast.show(this.oView.getModel("i18n").getResourceBundle().getText("MSGUpgrate"));
+                this._closeDialog();
+                //Refrescamos los datos de la lista
+                const oList = this.getView().byId("idTimeline");
+                oList.getBinding("content").refresh(true);
+                this.getView().setBusy(false)
             }
-
-            
-
         });
     }
 );
